@@ -109,8 +109,11 @@ def _request_row(req: dict) -> None:
     initials = "".join(w[0] for w in name.split()[:2]).upper() or "VF"
     when = req.get("age_label") or "just now"
 
+    # Approve/Deny get their own top-level columns rather than a nested pair:
+    # columns only nest one level deep, and a container does not reset that.
     with st.container(border=True, key=f"req_{req['id']}"):
-        body, action = st.columns([2, 1.15], vertical_alignment="center")
+        body, approve_col, deny_col = st.columns([2.2, 0.62, 0.55],
+                                                 vertical_alignment="center")
         with body:
             st.markdown(
                 f'<div style="display:flex;gap:11px;align-items:flex-start">'
@@ -124,18 +127,13 @@ def _request_row(req: dict) -> None:
                 f'· {ui.esc(when)}</div></div></div>',
                 unsafe_allow_html=True,
             )
-        with action:
-            if req["status"] == "pending":
-                approve, deny = st.columns(2)
-                with approve:
-                    if st.button("Approve", key=f"ok_{req['id']}", type="primary",
-                                 use_container_width=True):
-                        get_repo().set_request_status(req["id"], "approved", current_email())
-                        st.rerun()
-                with deny:
-                    if st.button("Deny", key=f"no_{req['id']}", use_container_width=True):
-                        get_repo().set_request_status(req["id"], "denied", current_email())
-                        st.rerun()
+        pending = req["status"] == "pending"
+        with approve_col:
+            if pending:
+                if st.button("Approve", key=f"ok_{req['id']}", type="primary",
+                             use_container_width=True):
+                    get_repo().set_request_status(req["id"], "approved", current_email())
+                    st.rerun()
             else:
                 approved = req["status"] == "approved"
                 st.markdown(
@@ -148,6 +146,11 @@ def _request_row(req: dict) -> None:
                     + "</div>",
                     unsafe_allow_html=True,
                 )
+        with deny_col:
+            if pending and st.button("Deny", key=f"no_{req['id']}",
+                                     use_container_width=True):
+                get_repo().set_request_status(req["id"], "denied", current_email())
+                st.rerun()
 
 
 def _policy_table(governed: list) -> None:
