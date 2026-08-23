@@ -14,6 +14,9 @@ truth for layout, copy and flow.
 
 ## Run it locally
 
+Needs **Python 3.11 or newer**. Verified end to end on 3.11 and on 3.14, which is what
+the pilot deploys against.
+
 ```bash
 python -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
@@ -39,13 +42,30 @@ Every setting is read from Streamlit secrets first, then the environment — so
 
 ## Deploy
 
-**Streamlit Community Cloud** — point it at this repo with `app.py` as the entrypoint,
-paste the table above into *Advanced settings → Secrets*, and deploy. Note the container
-filesystem is ephemeral: votes, submissions and access requests survive reruns and
-reconnects, but reset when the app sleeps or redeploys. That is fine for a pilot; see
-*Data* below for the durable path.
+**Streamlit Community Cloud.** Create the app against this repo with `app.py` as the
+entrypoint and `main` as the branch, then open *Advanced settings* and set two things
+before deploying:
 
-**Internal server** — anything that can run Python 3.11 works:
+* **Python version — 3.14.** All of Streamlit's binary dependencies (pyarrow, numpy,
+  pandas) publish `cp314` wheels, so nothing has to build from source.
+* **Secrets** — paste the keys from the table above. Without `AUTH_PASS` the app
+  deliberately refuses every login rather than falling back to a default.
+
+Get the Python version right the first time: **it cannot be changed on a deployed app.**
+Changing it means deleting the app and redeploying, which frees the subdomain for
+immediate reuse but loses the secrets. A `runtime.txt` will not help — Community Cloud
+reads the Advanced settings dropdown and ignores that file.
+
+Once live, set the app to private under *Settings → Sharing* and invite reviewers by
+email. Community Cloud apps are public by default, which would leave the shared password
+as the only thing between the open internet and the pilot.
+
+Two things to expect in normal running: pushing to `main` triggers an automatic
+redeploy, and the container filesystem is ephemeral — votes, submissions and access
+requests survive reruns and reconnects but reset when the app sleeps or redeploys.
+That is fine for a pilot; see *Data* below for the durable path.
+
+**Internal server** — anything that can run Python 3.11 or newer works:
 
 ```bash
 pip install -r requirements.txt
