@@ -289,6 +289,45 @@ hr, [data-testid="stDivider"] hr { border-color: var(--line2); }
 
 /* Selected submission track. */
 .st-key-track_selected { border-color: var(--ink) !important; border-width: 2px !important; }
+
+/* Streamlit's own widget chrome is themed light by config.toml so its base
+   stays predictable; these rules re-point it at our tokens in both modes.
+   Emotion classes are specific enough to need !important here. */
+.stButton > button, .stFormSubmitButton > button, [data-testid="stPopoverButton"] {
+  background-color: var(--card) !important;
+  border: 1px solid var(--line) !important;
+  color: var(--ink) !important;
+}
+.stButton > button:hover, .stFormSubmitButton > button:hover,
+[data-testid="stPopoverButton"]:hover {
+  border-color: var(--redBd) !important; color: var(--red) !important;
+}
+.stButton > button[kind="primary"], .stFormSubmitButton > button[kind="primary"] {
+  background-color: var(--red) !important; border-color: var(--red) !important;
+  color: #fff !important;
+}
+.stButton > button[kind="primary"]:hover, .stFormSubmitButton > button[kind="primary"]:hover {
+  background-color: #820000 !important; border-color: #820000 !important; color: #fff !important;
+}
+.stButton > button:disabled, .stFormSubmitButton > button:disabled { opacity: .55; }
+
+/* The white box around inputs is a wrapper div, not the input itself. */
+[data-testid="stTextInputRootElement"], [data-testid="stTextInput"] > div,
+[data-testid="stTextArea"] > div, [data-baseweb="base-input"], [data-baseweb="textarea"] {
+  background-color: var(--card) !important; border-color: var(--line) !important;
+}
+[data-testid="stTextInput"] input, [data-testid="stTextArea"] textarea {
+  background-color: var(--card) !important; color: var(--ink) !important;
+  -webkit-text-fill-color: var(--ink);
+}
+[data-testid="stChatInput"], [data-testid="stChatInput"] > div {
+  background-color: var(--card) !important; border-color: var(--line) !important;
+}
+[data-testid="stChatInput"] textarea { color: var(--ink) !important; }
+[data-testid="stExpander"] details {
+  background: var(--card) !important; border-color: var(--line) !important;
+}
 </style>
+
 
 """
