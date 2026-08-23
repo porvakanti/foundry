@@ -1,0 +1,58 @@
+[
+  {
+    "id": "req-0001",
+    "agent_id": "ciq",
+    "agent_name": "Contract IQ",
+    "requester": "maya.lindt@vodafone.com",
+    "requester_name": "Maya Lindt",
+    "requester_role": "Category Manager",
+    "reason": "Quarterly contract reviews for the Fixed team",
+    "status": "pending",
+    "age_label": "2h ago",
+    "requested_at": "2026-08-21T09:10:00+00:00",
+    "decided_at": null,
+    "decided_by": null
+  },
+  {
+    "id": "req-0002",
+    "agent_id": "neg",
+    "agent_name": "Negotiation Prep",
+    "requester": "jonas.berg@vodafone.com",
+    "requester_name": "Jonas Berg",
+    "requester_role": "Commercial Finance",
+    "reason": "Annual renewal with our logistics supplier",
+    "status": "pending",
+    "age_label": "5h ago",
+    "requested_at": "2026-08-21T06:20:00+00:00",
+    "decided_at": null,
+    "decided_by": null
+  },
+  {
+    "id": "req-0003",
+    "agent_id": "ciq",
+    "agent_name": "Contract IQ",
+    "requester": "chen.wei@vodafone.com",
+    "requester_name": "Chen Wei",
+    "requester_role": "AP Team Lead",
+    "reason": "Invoice dispute investigations need clause checks",
+    "status": "pending",
+    "age_label": "1d ago",
+    "requested_at": "2026-08-20T11:00:00+00:00",
+    "decided_at": null,
+    "decided_by": null
+  },
+  {
+    "id": "req-0004",
+    "agent_id": "neg",
+    "agent_name": "Negotiation Prep",
+    "requester": "priya.shah@vodafone.com",
+    "requester_name": "Priya Shah",
+    "requester_role": "Supplier Governance",
+    "reason": "Supplier QBR preparation",
+    "status": "pending",
+    "age_label": "2d ago",
+    "requested_at": "2026-08-19T14:30:00+00:00",
+    "decided_at": null,
+    "decided_by": null
+  }
+]

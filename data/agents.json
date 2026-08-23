@@ -1,0 +1,499 @@
+[
+  {
+    "id": "src",
+    "name": "Sourcing Copilot",
+    "tagline": "Drafts RFx packs, sourcing strategies and supplier shortlists from category data.",
+    "about": "Sourcing Copilot sits on top of the procurement platform and turns a category brief into a first-draft RFx pack: scope, evaluation criteria and a supplier shortlist pulled from our vendor master. It has been in production since January and is fully supported by Emplay under the platform SLA.",
+    "maturity": "scaled",
+    "platform": "Emplay",
+    "function": "Sourcing",
+    "locked": false,
+    "audience": "category managers and sourcing leads",
+    "owner": "Emplay (supplier)",
+    "owner_role": "Platform partner",
+    "owner_initials": "EM",
+    "how": [
+      "Reads your category brief and recent sourcing history from the platform",
+      "Drafts the RFx structure, evaluation criteria and timelines",
+      "You review, edit and publish — nothing is sent without your sign-off"
+    ],
+    "sample_prompts": [
+      "Draft an RFQ for network maintenance services in Germany",
+      "Shortlist suppliers for SD-WAN hardware under existing frameworks"
+    ],
+    "canned_reply": "Here is a first-draft RFQ structure: scope of works, 6 evaluation criteria weighted for TCO, and a 4-week timeline. I found 7 qualified suppliers on active frameworks — want me to add them to the invite list?",
+    "metrics": {
+      "monthly_users": "412",
+      "tasks_per_month": "1.2k",
+      "csat": "4.6",
+      "uptime": "99.8%"
+    },
+    "pulse": "18 RFx drafted this week",
+    "reviews": [
+      {
+        "who": "Elena Braun",
+        "role": "Category Manager",
+        "stars": 5,
+        "text": "Cut my RFx drafting from two days to two hours."
+      },
+      {
+        "who": "Marc Dupont",
+        "role": "Sourcing Lead",
+        "stars": 4,
+        "text": "Shortlists are spot on. Timeline suggestions still need a human eye."
+      }
+    ],
+    "rating_avg": 4.6,
+    "rating_count": 23,
+    "votes": 0,
+    "impact_score": 0,
+    "hours_saved_per_month": 0,
+    "pilot_users": 0,
+    "trend": "— 0",
+    "deep_link": null
+  },
+  {
+    "id": "ciq",
+    "name": "Contract IQ",
+    "tagline": "Extracts clauses, obligations and renewal risks from any contract in the repository.",
+    "about": "Contract IQ runs on our GCP environment and indexes the full contract repository. Ask it about liability caps, notice periods or auto-renewals across a supplier portfolio. Because contracts contain commercially sensitive terms, access is restricted by role.",
+    "maturity": "scaled",
+    "platform": "GCP",
+    "function": "Contracts",
+    "locked": true,
+    "audience": "the contract management and legal teams",
+    "owner": "Lena Fischer",
+    "owner_role": "Head of Contract Management",
+    "owner_initials": "LF",
+    "how": [
+      "Indexes executed contracts from the repository nightly",
+      "Answers clause-level questions with citations to the source document",
+      "Flags renewal and obligation deadlines to owners 90 days ahead"
+    ],
+    "sample_prompts": [
+      "Which supplier contracts auto-renew in the next quarter?",
+      "Summarise the liability caps across our top 10 IT vendors"
+    ],
+    "canned_reply": "3 contracts auto-renew next quarter. Two have 60-day notice periods expiring within 3 weeks — I can draft the non-renewal notices now.",
+    "metrics": {
+      "monthly_users": "208",
+      "tasks_per_month": "640",
+      "csat": "4.4",
+      "uptime": "99.8%"
+    },
+    "pulse": "42 clauses checked today",
+    "reviews": [
+      {
+        "who": "Tom Weller",
+        "role": "Senior Category Manager",
+        "stars": 5,
+        "text": "Found a 60-day notice window we would have missed. Paid for itself."
+      },
+      {
+        "who": "Ana Costa",
+        "role": "Legal Counsel",
+        "stars": 4,
+        "text": "Clause citations are accurate; bulk export could be smoother."
+      }
+    ],
+    "rating_avg": 4.4,
+    "rating_count": 18,
+    "votes": 0,
+    "impact_score": 0,
+    "hours_saved_per_month": 0,
+    "pilot_users": 0,
+    "trend": "— 0",
+    "deep_link": null
+  },
+  {
+    "id": "spl",
+    "name": "Spend Lens",
+    "tagline": "Answers spend questions in plain language over the Looker spend models.",
+    "about": "Spend Lens is a conversational layer over our certified Looker spend models. It answers plain-language questions with charts and always shows the underlying query, so numbers are traceable to the certified model — no more spreadsheet forks.",
+    "maturity": "scaled",
+    "platform": "Looker",
+    "function": "Analytics",
+    "locked": false,
+    "audience": "all of VP&C",
+    "owner": "Marco Ruiz",
+    "owner_role": "Analytics Lead",
+    "owner_initials": "MR",
+    "how": [
+      "Translates your question into a query on certified Looker models",
+      "Returns the chart plus the exact filters used, for traceability",
+      "Lets you pin answers to a personal board or share to Teams"
+    ],
+    "sample_prompts": [
+      "Show tail spend by market for the last two quarters",
+      "Which categories are trending over budget this year?"
+    ],
+    "canned_reply": "Tail spend was €14.2M last two quarters, concentrated in 3 markets. Germany is up 18% QoQ — here is the breakdown by category with the model filters I used.",
+    "metrics": {
+      "monthly_users": "655",
+      "tasks_per_month": "2.8k",
+      "csat": "4.2",
+      "uptime": "99.8%"
+    },
+    "pulse": "128 queries answered this week",
+    "reviews": [
+      {
+        "who": "Priya Shah",
+        "role": "Supplier Governance",
+        "stars": 4,
+        "text": "Finally one source of truth for spend questions."
+      },
+      {
+        "who": "Jonas Berg",
+        "role": "Commercial Finance",
+        "stars": 4,
+        "text": "Traceable queries make month-end reviews painless."
+      }
+    ],
+    "rating_avg": 4.2,
+    "rating_count": 41,
+    "votes": 0,
+    "impact_score": 0,
+    "hours_saved_per_month": 0,
+    "pilot_users": 0,
+    "trend": "— 0",
+    "deep_link": null
+  },
+  {
+    "id": "poc",
+    "name": "PO Chaser",
+    "tagline": "Chases overdue POs and drafts polite supplier nudges straight into Outlook.",
+    "about": "PO Chaser watches your open POs and, when goods receipt or confirmation is overdue, drafts a chase email in your tone with the PO details attached. Built by Anita in Copilot Studio during the Q2 hack week — it is this month’s scale-up winner and is being promoted to production.",
+    "maturity": "pilot",
+    "platform": "Copilot",
+    "function": "P2P",
+    "locked": false,
+    "audience": "P2P operations",
+    "owner": "Anita Novak",
+    "owner_role": "P2P Operations",
+    "owner_initials": "AN",
+    "how": [
+      "Checks your open POs against confirmation and GR deadlines daily",
+      "Drafts a chase email per overdue PO, matched to your writing tone",
+      "You send with one click — replies are threaded back to the PO"
+    ],
+    "sample_prompts": [
+      "Which of my POs are overdue for confirmation?",
+      "Draft chasers for everything overdue more than 5 days"
+    ],
+    "canned_reply": "You have 6 POs overdue. I drafted 6 chasers — 4 friendly first nudges and 2 firmer follow-ups for the 10+ day ones. Review and send?",
+    "metrics": {
+      "impact_score": 86,
+      "community_votes": 214,
+      "pilot_users": 38,
+      "hours_saved_per_month": 120
+    },
+    "pulse": "31 POs chased this week",
+    "reviews": [
+      {
+        "who": "Sofia Marin",
+        "role": "PMO",
+        "stars": 5,
+        "text": "My overdue PO list went from 20 to 3 in two weeks."
+      },
+      {
+        "who": "Chen Wei",
+        "role": "AP Team Lead",
+        "stars": 5,
+        "text": "The tone-matched drafts are scarily good."
+      }
+    ],
+    "rating_avg": 4.8,
+    "rating_count": 26,
+    "votes": 214,
+    "impact_score": 86,
+    "hours_saved_per_month": 120,
+    "pilot_users": 38,
+    "trend": "▲ 2",
+    "deep_link": null
+  },
+  {
+    "id": "neg",
+    "name": "Negotiation Prep",
+    "tagline": "Builds a negotiation brief: supplier financials, our leverage, walk-away points.",
+    "about": "Negotiation Prep assembles a one-page brief before a supplier meeting: their financial position, our spend and share of wallet, open disputes, and suggested anchors. It touches commercially sensitive strategy, so access is limited to the sourcing community.",
+    "maturity": "pilot",
+    "platform": "Copilot",
+    "function": "Sourcing",
+    "locked": true,
+    "audience": "the sourcing community",
+    "owner": "Tom Weller",
+    "owner_role": "Senior Category Manager",
+    "owner_initials": "TW",
+    "how": [
+      "Pulls supplier financials, our spend history and contract terms",
+      "Estimates leverage and suggests anchor and walk-away points",
+      "Exports a one-page brief to take into the meeting"
+    ],
+    "sample_prompts": [
+      "Prep me for the annual renewal with our top logistics supplier",
+      "What is our leverage position with vendor X?"
+    ],
+    "canned_reply": "Brief ready: our spend is 11% of their revenue (high leverage), 2 open SLA disputes strengthen our position, suggested anchor is a 9% reduction with a 5% walk-away.",
+    "metrics": {
+      "impact_score": 79,
+      "community_votes": 186,
+      "pilot_users": 26,
+      "hours_saved_per_month": 95
+    },
+    "pulse": "6 briefs generated this week",
+    "reviews": [
+      {
+        "who": "Lena Fischer",
+        "role": "Head of Contract Mgmt",
+        "stars": 5,
+        "text": "Walked into a renewal with leverage I did not know we had."
+      }
+    ],
+    "rating_avg": 4.5,
+    "rating_count": 11,
+    "votes": 186,
+    "impact_score": 79,
+    "hours_saved_per_month": 95,
+    "pilot_users": 26,
+    "trend": "— 0",
+    "deep_link": null
+  },
+  {
+    "id": "sob",
+    "name": "Onboarding Buddy",
+    "tagline": "Walks new suppliers through onboarding and answers their status questions.",
+    "about": "Onboarding Buddy answers the two questions that flood the shared mailbox: “what do you need from me?” and “where is my onboarding?”. It tracks each supplier’s step, explains what document is missing and why, and escalates only genuine blockers to the team.",
+    "maturity": "pilot",
+    "platform": "Copilot",
+    "function": "Supplier Mgmt",
+    "locked": false,
+    "audience": "supplier governance",
+    "owner": "Priya Shah",
+    "owner_role": "Supplier Governance",
+    "owner_initials": "PS",
+    "how": [
+      "Tracks each supplier’s onboarding step in real time",
+      "Explains missing documents and requirements in supplier-friendly language",
+      "Escalates blockers older than 5 days to the governance team"
+    ],
+    "sample_prompts": [
+      "Where is supplier Acme in onboarding?",
+      "What is blocking the 3 suppliers added last week?"
+    ],
+    "canned_reply": "Acme is at step 4 of 6 — waiting on their insurance certificate (requested twice). The other 3 are unblocked and should clear this week.",
+    "metrics": {
+      "impact_score": 71,
+      "community_votes": 154,
+      "pilot_users": 31,
+      "hours_saved_per_month": 80
+    },
+    "pulse": "9 suppliers guided this week",
+    "reviews": [
+      {
+        "who": "Marta Kovacs",
+        "role": "Category Analyst",
+        "stars": 4,
+        "text": "Suppliers stopped emailing the shared inbox. Bliss."
+      }
+    ],
+    "rating_avg": 4.3,
+    "rating_count": 14,
+    "votes": 154,
+    "impact_score": 71,
+    "hours_saved_per_month": 80,
+    "pilot_users": 31,
+    "trend": "▲ 1",
+    "deep_link": null
+  },
+  {
+    "id": "sav",
+    "name": "Savings Tracker",
+    "tagline": "Logs savings initiatives from your notes and keeps the tracker up to date.",
+    "about": "Savings Tracker turns meeting notes and emails into structured savings entries — initiative, category, run-rate vs one-off, validation status — and syncs them to the central tracker so month-end reporting stops being a scavenger hunt.",
+    "maturity": "pilot",
+    "platform": "Copilot",
+    "function": "Analytics",
+    "locked": false,
+    "audience": "commercial finance",
+    "owner": "Jonas Berg",
+    "owner_role": "Commercial Finance",
+    "owner_initials": "JB",
+    "how": [
+      "Parses notes or emails you forward to it for savings signals",
+      "Structures them into the standard savings taxonomy",
+      "Syncs to the central tracker and flags entries needing validation"
+    ],
+    "sample_prompts": [
+      "Log the 7% renewal saving from today’s vendor call",
+      "What is still unvalidated for this quarter?"
+    ],
+    "canned_reply": "Logged: 7% run-rate saving on the renewal, ~€96k annualised, pending finance validation. You have 4 other unvalidated entries this quarter.",
+    "metrics": {
+      "impact_score": 64,
+      "community_votes": 121,
+      "pilot_users": 19,
+      "hours_saved_per_month": 60
+    },
+    "pulse": "14 savings logged this week",
+    "reviews": [],
+    "rating_avg": null,
+    "rating_count": 0,
+    "votes": 121,
+    "impact_score": 64,
+    "hours_saved_per_month": 60,
+    "pilot_users": 19,
+    "trend": "▼ 1",
+    "deep_link": null
+  },
+  {
+    "id": "mmn",
+    "name": "Minute Maker",
+    "tagline": "Turns governance calls into minutes, decisions and tracked actions.",
+    "about": "Minute Maker joins governance calls, produces minutes in our standard format, extracts decisions and actions with owners and dates, and chases the actions weekly until closed.",
+    "maturity": "pilot",
+    "platform": "Copilot",
+    "function": "Governance",
+    "locked": false,
+    "audience": "governance forum members",
+    "owner": "Sofia Marin",
+    "owner_role": "PMO",
+    "owner_initials": "SM",
+    "how": [
+      "Joins the call and drafts minutes in the standard template",
+      "Extracts decisions and actions with owners and due dates",
+      "Chases open actions weekly and reports status to the chair"
+    ],
+    "sample_prompts": [
+      "Summarise decisions from today’s supplier review board",
+      "Which actions from last month are still open?"
+    ],
+    "canned_reply": "3 decisions, 5 actions captured. 2 actions from last month are overdue — I’ve queued reminders to the owners for Monday.",
+    "metrics": {
+      "impact_score": 55,
+      "community_votes": 98,
+      "pilot_users": 22,
+      "hours_saved_per_month": 45
+    },
+    "pulse": "5 meetings minuted this week",
+    "reviews": [],
+    "rating_avg": null,
+    "rating_count": 0,
+    "votes": 98,
+    "impact_score": 55,
+    "hours_saved_per_month": 45,
+    "pilot_users": 22,
+    "trend": "— 0",
+    "deep_link": null
+  },
+  {
+    "id": "tst",
+    "name": "Tail-Spend Triage",
+    "tagline": "Auto-routes small purchase requests to catalogues, cards or quick quotes.",
+    "about": "An idea to automatically triage sub-€10k requests: route to an existing catalogue item, a purchasing card, or a lightweight 3-quote process — cutting cycle time for the long tail.",
+    "maturity": "idea",
+    "platform": "Copilot",
+    "function": "Sourcing",
+    "locked": false,
+    "audience": "everyone",
+    "owner": "Marta Kovacs",
+    "owner_role": "Category Analyst",
+    "owner_initials": "MK",
+    "how": [
+      "Classifies incoming low-value requests",
+      "Routes to catalogue, card or quick-quote path",
+      "Reports leakage and cycle-time savings"
+    ],
+    "sample_prompts": [],
+    "canned_reply": "",
+    "metrics": {
+      "upvotes": 67,
+      "comments": 12,
+      "feasibility": "Medium",
+      "next_sprint_pick": "Top 2"
+    },
+    "pulse": "12 votes this week",
+    "reviews": [],
+    "rating_avg": null,
+    "rating_count": 0,
+    "votes": 67,
+    "impact_score": 0,
+    "hours_saved_per_month": 0,
+    "pilot_users": 0,
+    "trend": "— 0",
+    "deep_link": null
+  },
+  {
+    "id": "esg",
+    "name": "ESG Compliance Scout",
+    "tagline": "Monitors supplier ESG disclosures and flags compliance gaps early.",
+    "about": "An idea to scan supplier ESG disclosures and news signals against our supplier code of conduct, flagging gaps before annual reviews.",
+    "maturity": "idea",
+    "platform": "GCP",
+    "function": "Supplier Mgmt",
+    "locked": false,
+    "audience": "everyone",
+    "owner": "Daniel Osei",
+    "owner_role": "Sustainability Lead",
+    "owner_initials": "DO",
+    "how": [
+      "Monitors disclosures and public ESG signals",
+      "Scores gaps against our code of conduct",
+      "Alerts supplier managers before reviews"
+    ],
+    "sample_prompts": [],
+    "canned_reply": "",
+    "metrics": {
+      "upvotes": 54,
+      "comments": 12,
+      "feasibility": "Medium",
+      "next_sprint_pick": "Top 2"
+    },
+    "pulse": "8 votes this week",
+    "reviews": [],
+    "rating_avg": null,
+    "rating_count": 0,
+    "votes": 54,
+    "impact_score": 0,
+    "hours_saved_per_month": 0,
+    "pilot_users": 0,
+    "trend": "— 0",
+    "deep_link": null
+  },
+  {
+    "id": "inv",
+    "name": "Invoice Dispute Resolver",
+    "tagline": "Matches disputed invoices to POs and GRs and drafts the resolution.",
+    "about": "An idea to auto-investigate invoice disputes: match invoice, PO and goods receipt, identify the mismatch, and draft the resolution note for the supplier.",
+    "maturity": "idea",
+    "platform": "Copilot",
+    "function": "P2P",
+    "locked": false,
+    "audience": "everyone",
+    "owner": "Chen Wei",
+    "owner_role": "AP Team Lead",
+    "owner_initials": "CW",
+    "how": [
+      "Three-way matches disputed invoices automatically",
+      "Identifies the root-cause mismatch",
+      "Drafts the supplier resolution note"
+    ],
+    "sample_prompts": [],
+    "canned_reply": "",
+    "metrics": {
+      "upvotes": 41,
+      "comments": 12,
+      "feasibility": "Medium",
+      "next_sprint_pick": "Top 2"
+    },
+    "pulse": "6 votes this week",
+    "reviews": [],
+    "rating_avg": null,
+    "rating_count": 0,
+    "votes": 41,
+    "impact_score": 0,
+    "hours_saved_per_month": 0,
+    "pilot_users": 0,
+    "trend": "— 0",
+    "deep_link": null
+  }
+]
