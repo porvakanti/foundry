@@ -288,7 +288,7 @@ def _card_body(agent: Agent) -> str:
 
 def scaled_card(agent: Agent, ctx: str = "home") -> None:
     """Production agent: adoption numbers, no competition."""
-    with st.container(border=True, key=f"agentcard_{ctx}_{agent.id}"):
+    with st.container(border=True, key=f"card_agent_{ctx}_{agent.id}"):
         m = agent.metrics
         st.markdown(
             _card_head(agent) + _card_body(agent)
@@ -308,7 +308,7 @@ def pilot_card(agent: Agent, ctx: str = "home", ranks: dict[str, int] | None = N
     """Copilot pilot: impact bar, rank and the upvote that feeds the score."""
     voted = voted if voted is not None else voted_ids()
     rank = (ranks or {}).get(agent.id, 0)
-    with st.container(border=True, key=f"agentcard_{ctx}_{agent.id}"):
+    with st.container(border=True, key=f"card_agent_{ctx}_{agent.id}"):
         rank_badge = badge(f"#{rank}", "var(--chip)", "var(--ink2)") if rank else ""
         st.markdown(
             _card_head(agent, trailing=rank_badge) + _card_body(agent)
@@ -333,7 +333,7 @@ def pilot_card(agent: Agent, ctx: str = "home", ranks: dict[str, int] | None = N
 def idea_card(agent: Agent, ctx: str = "home", voted: set[str] | None = None) -> None:
     """Idea: no build yet, just the problem and the votes behind it."""
     voted = voted if voted is not None else voted_ids()
-    with st.container(border=True, key=f"agentcard_{ctx}_{agent.id}"):
+    with st.container(border=True, key=f"card_agent_{ctx}_{agent.id}"):
         st.markdown(
             f'<div class="vf-card-title" style="margin-top:0">{esc(agent.name)}</div>'
             f'<div class="vf-card-tag">{esc(agent.tagline)}</div>'
@@ -360,7 +360,7 @@ def library_card(agent: Agent, ctx: str = "lib", voted: set[str] | None = None) 
     else:
         meta = f"▲ {agent.votes} votes"
 
-    with st.container(border=True, key=f"agentcard_{ctx}_{agent.id}"):
+    with st.container(border=True, key=f"card_agent_{ctx}_{agent.id}"):
         st.markdown(
             _card_head(agent, trailing=platform_badge(agent) + badge(label, bg, fg))
             + _card_body(agent)

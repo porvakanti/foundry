@@ -99,7 +99,7 @@ def _track_picker() -> None:
     for col, (key, (glyph, title, sub, tint, fg)) in zip(cols, TRACKS.items()):
         selected = key == track
         with col:
-            with st.container(border=True, key=f"track_{key}"):
+            with st.container(border=True, key=f"card_track_{key}"):
                 st.markdown(
                     f'<div class="vf-mono" style="background:{tint};color:{fg};font-size:15px">'
                     f'{glyph}</div>'

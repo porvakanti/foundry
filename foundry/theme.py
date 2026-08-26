@@ -58,6 +58,7 @@ LIGHT = {
     "cta1": "linear-gradient(135deg,#FFF7F7,#FDEDEC)", "cta1b": "#F4D9D7",
     "cta2": "linear-gradient(135deg,#FCF8FD,#F6ECF7)", "cta2b": "#E6D3E8",
     "cta3": "linear-gradient(135deg,#F6FBFC,#E9F4F6)", "cta3b": "#CFE4E8",
+    "onAccent": "#FFFFFF",
     "shadow": "0 1px 2px rgba(0,0,0,.04)",
     "shadowUp": "0 12px 28px rgba(0,0,0,.09)",
 }
@@ -79,6 +80,7 @@ DARK = {
     "cta1": "linear-gradient(135deg,#2A191B,#241417)", "cta1b": "#40292C",
     "cta2": "linear-gradient(135deg,#241A26,#1F1421)", "cta2b": "#3C2B3F",
     "cta3": "linear-gradient(135deg,#16262A,#122024)", "cta3b": "#27444A",
+    "onAccent": "#141416",
     "shadow": "0 1px 2px rgba(0,0,0,.3)",
     "shadowUp": "0 12px 28px rgba(0,0,0,.45)",
 }
@@ -165,7 +167,8 @@ a { color: inherit; text-decoration: none; }
 .vf-brand { display: flex; align-items: center; gap: 10px; }
 .vf-brand-name { font-weight: 700; font-size: 15px; letter-spacing: -.01em; white-space: nowrap; color: var(--ink); }
 .vf-avatar {
-  width: 30px; height: 30px; border-radius: 99px; background: var(--tea); color: #fff;
+  width: 30px; height: 30px; border-radius: 99px; background: var(--tea);
+  color: var(--onAccent);
   display: grid; place-items: center; font-size: 12px; font-weight: 700;
 }
 
@@ -255,13 +258,17 @@ hr, [data-testid="stDivider"] hr { border-color: var(--line2); }
 [data-testid="stPageLink"] a[aria-current="page"] p,
 [data-testid="stPageLink"] a[aria-current="page"] div { color: var(--ink) !important; font-weight: 700 !important; }
 
-/* Cards: every keyed agent card container is the card frame itself. */
-[class*="st-key-agentcard_"], [class*="st-key-foryou_"], [class*="st-key-cta_"],
-[class*="st-key-track_"], [class*="st-key-podium_"], [class*="st-key-req_"] {
+/* Card containers all carry a reserved "card_" key prefix. Matching on a
+   narrower prefix (st-key-podium_, st-key-cta_ ...) also caught the *buttons*
+   inside them -- Streamlit stamps a widget's key onto its element container
+   too -- which painted an opaque card background behind the button. On the
+   dark podium tile that turned the button into a white slab with white text.
+   No widget key may start with card_. */
+[class*="st-key-card_"] {
   border-radius: 16px !important; border-color: var(--line) !important;
   background: var(--card); transition: border-color .18s ease, box-shadow .18s ease;
 }
-[class*="st-key-agentcard_"]:hover, [class*="st-key-foryou_"]:hover {
+[class*="st-key-card_agent_"]:hover, [class*="st-key-card_foryou_"]:hover {
   border-color: var(--redBd) !important; box-shadow: var(--shadowUp);
 }
 
@@ -273,43 +280,50 @@ hr, [data-testid="stDivider"] hr { border-color: var(--line2); }
 }
 
 /* Podium leader: the dark card IS the container. */
-.st-key-podium_lead {
+.st-key-card_podium_lead {
   background: var(--panel) !important; border-color: var(--panel) !important; color: #fff;
 }
-.st-key-podium_lead .vf-track { background: rgba(255,255,255,.15); }
-.st-key-podium_lead .stButton > button {
+.st-key-card_podium_lead .vf-track { background: rgba(255,255,255,.15); }
+.st-key-card_podium_lead [data-testid^="stBaseButton"] {
   background: rgba(255,255,255,.12) !important; color: #fff !important;
   border-color: rgba(255,255,255,.28) !important;
 }
-.st-key-podium_lead .stButton > button:hover {
+.st-key-card_podium_lead [data-testid^="stBaseButton"]:hover {
   background: rgba(255,255,255,.2) !important; color: #fff !important;
   border-color: rgba(255,255,255,.45) !important;
 }
-.st-key-podium_lead .stButton > button p { color: #fff !important; }
+.st-key-card_podium_lead [data-testid^="stBaseButton"] p { color: #fff !important; }
 
-/* Selected submission track. */
-.st-key-track_selected { border-color: var(--ink) !important; border-width: 2px !important; }
 
 /* Streamlit's own widget chrome is themed light by config.toml so its base
    stays predictable; these rules re-point it at our tokens in both modes.
    Emotion classes are specific enough to need !important here. */
-.stButton > button, .stFormSubmitButton > button, [data-testid="stPopoverButton"] {
+/* Match on the button's own testid, not "\.stButton > button": a button given a
+   help= tooltip is wrapped in an extra div, so the direct-child selector skips
+   it -- which is exactly what left the themed toggle unstyled. */
+[data-testid^="stBaseButton"], [data-testid="stPopoverButton"] {
   background-color: var(--card) !important;
   border: 1px solid var(--line) !important;
   color: var(--ink) !important;
 }
-.stButton > button:hover, .stFormSubmitButton > button:hover,
-[data-testid="stPopoverButton"]:hover {
-  border-color: var(--redBd) !important; color: var(--red) !important;
+[data-testid^="stBaseButton"] p, [data-testid="stPopoverButton"] p {
+  color: var(--ink) !important;
 }
-.stButton > button[kind="primary"], .stFormSubmitButton > button[kind="primary"] {
+[data-testid^="stBaseButton"]:hover, [data-testid="stPopoverButton"]:hover {
+  border-color: var(--redBd) !important; color: var(--red2) !important;
+}
+[data-testid^="stBaseButton"]:hover p, [data-testid="stPopoverButton"]:hover p {
+  color: var(--red2) !important;
+}
+[data-testid^="stBaseButton"][kind="primary"] {
   background-color: var(--red) !important; border-color: var(--red) !important;
   color: #fff !important;
 }
-.stButton > button[kind="primary"]:hover, .stFormSubmitButton > button[kind="primary"]:hover {
+[data-testid^="stBaseButton"][kind="primary"] p { color: #fff !important; }
+[data-testid^="stBaseButton"][kind="primary"]:hover {
   background-color: #820000 !important; border-color: #820000 !important; color: #fff !important;
 }
-.stButton > button:disabled, .stFormSubmitButton > button:disabled { opacity: .55; }
+[data-testid^="stBaseButton"]:disabled { opacity: .55; }
 
 /* The white box around inputs is a wrapper div, not the input itself. */
 [data-testid="stTextInputRootElement"], [data-testid="stTextInput"] > div,
@@ -327,7 +341,56 @@ hr, [data-testid="stDivider"] hr { border-color: var(--line2); }
 [data-testid="stExpander"] details {
   background: var(--card) !important; border-color: var(--line) !important;
 }
+
+/* Focus and active states repaint from Streamlit's own (light) base theme, so
+   they need the same tokens as the resting state -- otherwise the button you
+   just clicked is the one that stops matching the theme. */
+[data-testid^="stBaseButton"]:focus, [data-testid^="stBaseButton"]:focus-visible,
+[data-testid^="stBaseButton"]:active,
+[data-testid="stPopoverButton"]:focus, [data-testid="stPopoverButton"]:focus-visible,
+[data-testid="stPopoverButton"]:active {
+  background-color: var(--card) !important; color: var(--ink) !important;
+  border-color: var(--line) !important; box-shadow: none !important;
+}
+[data-testid^="stBaseButton"]:focus p, [data-testid^="stBaseButton"]:active p {
+  color: var(--ink) !important;
+}
+[data-testid^="stBaseButton"][kind="primary"]:focus,
+[data-testid^="stBaseButton"][kind="primary"]:active {
+  background-color: var(--red) !important; color: #fff !important;
+  border-color: var(--red) !important;
+}
+[data-testid^="stBaseButton"][kind="primary"]:focus p,
+[data-testid^="stBaseButton"][kind="primary"]:active p { color: #fff !important; }
+
+/* Segmented control (maturity tabs) and pills (function / platform chips).
+   Selected reads as a filled chip in both themes by inverting ink and canvas. */
+[data-testid="stButtonGroup"] button {
+  background-color: var(--card) !important; border: 1px solid var(--line) !important;
+  color: var(--ink2) !important;
+}
+[data-testid="stButtonGroup"] button p { color: var(--ink2) !important; }
+[data-testid="stButtonGroup"] button[aria-checked="true"],
+[data-testid="stButtonGroup"] button[data-selected="true"] {
+  background-color: var(--ink) !important; border-color: var(--ink) !important;
+  color: var(--bg) !important;
+}
+[data-testid="stButtonGroup"] button[aria-checked="true"] p,
+[data-testid="stButtonGroup"] button[data-selected="true"] p {
+  color: var(--bg) !important;
+}
+
+/* Inside a dialog the text area exposes a different root testid, which the
+   earlier rule missed -- leaving dark placeholder text on a dark field. */
+[data-testid="stTextAreaRootElement"], [data-testid="stTextInputRootElement"] {
+  background-color: var(--card) !important; color: var(--ink) !important;
+  border-color: var(--line) !important;
+}
+[data-testid="stDialog"] > div, [role="dialog"] {
+  background-color: var(--card) !important; color: var(--ink) !important;
+}
 </style>
+
 
 
 """

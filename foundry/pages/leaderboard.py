@@ -95,7 +95,8 @@ def _podium(pilots, voted) -> None:
     for i, (col, agent) in enumerate(zip(cols, top)):
         leading = i == 0
         with col:
-            key = "podium_lead" if leading else f"podium_{agent.id}"
+            key = ("card_podium_lead" if leading
+                   else f"card_podium_{agent.id}")
             with st.container(border=True, key=key):
                 st.markdown(
                     '<div>'
