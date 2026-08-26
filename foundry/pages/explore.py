@@ -1,4 +1,4 @@
-"""Explore — the marketplace home.
+"""Explore - the marketplace home.
 
 Hero, the three submission CTAs, the winner ticker, a personalised "For you"
 row, then the three maturity bands.
@@ -17,14 +17,14 @@ from foundry.repo import get_repo
 #: Why the Concierge picked each tile for this role. Phase 2 derives these
 #: from the reviewer's own usage and their team's, not a hardcoded list.
 FOR_YOU = {
-    "poc": "Built inside P2P operations — your team ships this",
+    "poc": "Built inside P2P operations - your team ships this",
     "spl": "41 colleagues in your market ask it spend questions",
     "sob": "Peers in your role use this weekly",
-    "tst": "New P2P-adjacent idea — needs your vote",
+    "tst": "New P2P-adjacent idea - needs your vote",
 }
 
 CTAS = [
-    ("idea", "+", "Submit an idea", "No build needed — just the problem",
+    ("idea", "+", "Submit an idea", "No build needed - just the problem",
      "var(--cta1)", "var(--cta1b)", "var(--redSoft)", "var(--red)"),
     ("agent", "◆", "Publish your Copilot agent", "Surface what you built to all of VP&C",
      "var(--cta2)", "var(--cta2b)", "var(--purSoft)", "var(--pur)"),
@@ -63,7 +63,7 @@ def render() -> None:
     ui.card_row(pilots, ui.pilot_card, ctx="home_pilot", ranks=ranks, voted=voted)
 
     st.markdown("<div style='height:26px'></div>", unsafe_allow_html=True)
-    ui.section_header("New ideas", "Vote on what gets built next — top ideas get a build sprint",
+    ui.section_header("New ideas", "Vote on what gets built next - top ideas get a build sprint",
                       see_all=("See all →", "idea"))
     ui.card_row(ideas, ui.idea_card, ctx="home_idea", voted=voted)
 
@@ -95,7 +95,7 @@ def _hero() -> None:
             <div style="font-size:14.5px;color:var(--ink2);margin-top:16px;line-height:1.6;
                  max-width:520px">
               Discover, try and scale the AI agents built across Vodafone Procurement &amp;
-              Connectivity — from production platforms to the Copilot agent your colleague
+              Connectivity - from production platforms to the Copilot agent your colleague
               built last week.</div>
           </div>
           <div style="display:flex;flex-direction:column;gap:12px">

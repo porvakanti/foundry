@@ -2,7 +2,7 @@
 
 Cards are a hybrid on purpose. The visual body is one HTML block so it can
 match the design spec, but the actions are real Streamlit buttons inside a
-keyed container — a plain ``<a href>`` would trigger a browser navigation and
+keyed container - a plain ``<a href>`` would trigger a browser navigation and
 drop the reviewer's session. The container key is what the CSS hooks onto to
 make button-and-markup read as a single card.
 """
@@ -34,7 +34,7 @@ MATURITY_LABEL = {
 
 NOTIFICATIONS = [
     ("Access approved", "Lena Fischer approved your access to Contract IQ", "2h"),
-    ("New in P2P", "Idea submitted: Invoice Dispute Resolver — vote now", "1d"),
+    ("New in P2P", "Idea submitted: Invoice Dispute Resolver - vote now", "1d"),
     ("August review results", "PO Chaser won and is being promoted to production", "3d"),
 ]
 
@@ -146,13 +146,13 @@ def header(page: str = "Marketplace") -> None:
         st.text_input(
             "Search",
             key="q",
-            placeholder="Search, or describe a task, then press ↵ — the Concierge matches agents",
+            placeholder="Search, or describe a task, then press ↵ - the Concierge matches agents",
             label_visibility="collapsed",
         )
 
     with say:
         if st.button("Feedback", key="open_feedback", use_container_width=True,
-                     help="Tell us what works and what doesn't — it goes straight to the team"):
+                     help="Tell us what works and what doesn't. It goes straight to the team."):
             feedback_dialog()
 
     with bell:
@@ -230,7 +230,7 @@ def _concierge_panel() -> None:
         if not hits:
             st.markdown(
                 '<div style="font-size:12.5px;color:var(--ink3);padding:6px 2px">'
-                'No direct match — try describing the task differently, or browse '
+                'No direct match - try describing the task differently, or browse '
                 'the Library.</div>',
                 unsafe_allow_html=True,
             )
@@ -268,7 +268,7 @@ def _vote_button(agent: Agent, ctx: str, already: bool) -> None:
     if st.button(label, key=f"vote_{ctx}_{agent.id}", use_container_width=True,
                  disabled=already,
                  help="You've already voted for this agent" if already
-                 else "Upvote — votes are 10% of the monthly score",
+                 else "Upvote - votes are 10% of the monthly score",
                  type="primary" if already else "secondary"):
         if get_repo().record_vote(agent.id, current_email()):
             st.rerun()
@@ -304,9 +304,9 @@ def scaled_card(agent: Agent, ctx: str = "home") -> None:
         st.markdown(
             _card_head(agent) + _card_body(agent)
             + '<div class="vf-metrics">'
-            + metric_cell(m.get("monthly_users", "—"), "MONTHLY USERS")
-            + metric_cell(m.get("tasks_per_month", "—"), "TASKS / MO")
-            + metric_cell(m.get("csat", "—"), "CSAT", "var(--tea)")
+            + metric_cell(m.get("monthly_users", "-"), "MONTHLY USERS")
+            + metric_cell(m.get("tasks_per_month", "-"), "TASKS / MO")
+            + metric_cell(m.get("csat", "-"), "CSAT", "var(--tea)")
             + "</div>",
             unsafe_allow_html=True,
         )
@@ -361,11 +361,11 @@ def idea_card(agent: Agent, ctx: str = "home", voted: set[str] | None = None) ->
 
 
 def library_card(agent: Agent, ctx: str = "lib", voted: set[str] | None = None) -> None:
-    """The Library's unified card — same shape whatever the maturity."""
+    """The Library's unified card - same shape whatever the maturity."""
     voted = voted if voted is not None else voted_ids()
     label, bg, fg = MATURITY_BADGE[agent.maturity]
     if agent.maturity == "scaled":
-        meta = f"{agent.metrics.get('monthly_users', '—')} users/mo · CSAT {agent.metrics.get('csat', '—')}"
+        meta = f"{agent.metrics.get('monthly_users', '-')} users/mo · CSAT {agent.metrics.get('csat', '-')}"
     elif agent.maturity == "pilot":
         meta = f"Impact {agent.impact_score} · ▲ {agent.votes}"
     else:
@@ -396,7 +396,7 @@ def card_row(agents: list[Agent], render, per_row: int = 3, **kwargs: Any) -> No
     """Lay agents out in rows of equal-width cards.
 
     The design spec scrolls these horizontally; Streamlit has no horizontal
-    scroller, so the band wraps into rows of three instead — same content,
+    scroller, so the band wraps into rows of three instead - same content,
     same order, no hack.
     """
     for start in range(0, len(agents), per_row):
@@ -432,7 +432,7 @@ def feedback_dialog() -> None:
     st.markdown(
         f'<div style="font-size:12.5px;color:var(--ink3);line-height:1.55">'
         f'You\'re on <b>{esc(where)}</b>. Anything that\'s broken, confusing or '
-        f'missing — the blunter the better, it all reaches the VP&amp;C AI team.</div>',
+        f'missing - the blunter the better, it all reaches the VP&amp;C AI team.</div>',
         unsafe_allow_html=True,
     )
 
@@ -451,7 +451,7 @@ def feedback_dialog() -> None:
         topic = st.selectbox("What's this about?", TOPICS)
         text = st.text_area(
             "Your feedback",
-            placeholder="e.g. The leaderboard is the bit my team would use weekly — "
+            placeholder="e.g. The leaderboard is the bit my team would use weekly - "
                         "but I couldn't tell how a pilot gets nominated.",
             height=120,
         )
@@ -472,7 +472,7 @@ def feedback_dialog() -> None:
         st.rerun()
     if sent:
         if not text.strip() and stars is None:
-            st.error("Add a comment or a rating — otherwise there's nothing to send.")
+            st.error("Add a comment or a rating - otherwise there's nothing to send.")
             return
         entry = store.add(Feedback(
             who=current_email(), page=page, topic=topic, text=text,
@@ -489,6 +489,6 @@ def feedback_toast() -> None:
         return
     synced = st.session_state.pop("feedback_sent")
     if synced:
-        st.toast("Thanks — your feedback is with the team.", icon="✅")
+        st.toast("Thanks - your feedback is with the team.", icon="✅")
     else:
-        st.toast("Thanks — feedback saved on the app.", icon="✅")
+        st.toast("Thanks - feedback saved on the app.", icon="✅")

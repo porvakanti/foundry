@@ -2,7 +2,7 @@
 
 Streamlit's own navigation is used (``st.navigation(position="hidden")``) so we
 can render the marketplace's top bar ourselves while still getting real
-client-side page switching — which matters because a raw ``<a href>`` would
+client-side page switching - which matters because a raw ``<a href>`` would
 reload the browser and drop the reviewer's session.
 
 Agent detail is registered but never linked in the nav; it is reached by
@@ -53,7 +53,7 @@ def open_agent(agent_id: str) -> None:
 
 
 def selected_agent_id() -> str | None:
-    """The agent the detail page should show — session state, then the URL."""
+    """The agent the detail page should show - session state, then the URL."""
     return st.session_state.get("agent_id") or st.query_params.get("id")
 
 

@@ -1,7 +1,7 @@
-"""SAP Datasphere adapter — governed analytics for the scoring model.
+"""SAP Datasphere adapter - governed analytics for the scoring model.
 
 Datasphere is where the harmonised spend and usage models live, so the
-Evaluation Agent's inputs — hours saved, adoption, CSAT — are read from
+Evaluation Agent's inputs - hours saved, adoption, CSAT - are read from
 here rather than recomputed in the app.
 """
 
@@ -61,7 +61,7 @@ class DatasphereRepo:
     def add_request(self, agent_id: str, agent_name: str, requester: str, reason: str) -> None:
         """File an access request against a restricted agent.
 
-        Phase 2: Not served from Datasphere — raise and route access requests through
+        Phase 2: Not served from Datasphere - raise and route access requests through
         the operational adapter.
         """
         raise NotImplementedError("DatasphereRepo is a Phase 2 stub")

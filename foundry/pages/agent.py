@@ -1,4 +1,4 @@
-"""Agent detail — the page a tile opens into.
+"""Agent detail - the page a tile opens into.
 
 Badges and copy on the left, the playground on the right. Which playground you
 get depends on the agent: a live sandbox chat for embeddable platforms, a
@@ -29,7 +29,7 @@ def render() -> None:
     sent_for = st.session_state.pop("access_sent", None)
     if sent_for:
         st.success(
-            f"Request sent — the owner of {sent_for} has been notified. "
+            f"Request sent - the owner of {sent_for} has been notified. "
             "You'll get a Teams message when it's approved."
         )
 
@@ -253,7 +253,7 @@ def _sample_transcript(agent: Agent, playground) -> None:
                     unsafe_allow_html=True)
         st.markdown(
             '<div style="font-size:12px;color:var(--ink3);line-height:1.55;margin-top:10px">'
-            "This agent can't be embedded here — the marketplace deep-links you to it.</div>",
+            "This agent can't be embedded here - the marketplace deep-links you to it.</div>",
             unsafe_allow_html=True,
         )
         st.link_button(playground.open_label, agent.deep_link or "#",
@@ -268,7 +268,7 @@ def _lock_panel(agent: Agent) -> None:
             f"You don't have access yet</div>"
             f'<div style="font-size:13px;color:var(--ink2);line-height:1.6;margin-top:8px">'
             f'{ui.esc(agent.name)} is restricted to {ui.esc(agent.audience)}. Request access '
-            f'and {ui.esc(agent.owner)} will review it — typical turnaround is 1 working '
+            f'and {ui.esc(agent.owner)} will review it - typical turnaround is 1 working '
             f'day.</div>',
             unsafe_allow_html=True,
         )
@@ -284,7 +284,7 @@ def _idea_panel(agent: Agent) -> None:
             '<div style="font-weight:800;font-size:16px;letter-spacing:-.02em">'
             'This is still an idea</div>'
             '<div style="font-size:13px;color:var(--ink2);line-height:1.6;margin-top:8px">'
-            'Vote it up — the top ideas each quarter get a build sprint with the '
+            'Vote it up - the top ideas each quarter get a build sprint with the '
             'VP&amp;C AI team.</div>',
             unsafe_allow_html=True,
         )
@@ -300,7 +300,7 @@ def _request_dialog(agent: Agent) -> None:
     st.markdown(
         f'<div style="font-size:13px;color:var(--ink2);line-height:1.6">'
         f'Your request goes to <b>{ui.esc(agent.owner)}</b> ({ui.esc(agent.owner_role)}). '
-        f'Access is role-based — tell them briefly why you need it.</div>',
+        f'Access is role-based - tell them briefly why you need it.</div>',
         unsafe_allow_html=True,
     )
     # A form, not a bare button: Streamlit only commits a text_area's value on
@@ -321,7 +321,7 @@ def _request_dialog(agent: Agent) -> None:
         st.rerun()
     if sent:
         if not reason.strip():
-            st.error("Add a line on why you need access — the owner reviews these by hand.")
+            st.error("Add a line on why you need access - the owner reviews these by hand.")
             return
         get_repo().add_request(agent.id, agent.name, current_email(), reason.strip())
         st.session_state["access_sent"] = agent.name

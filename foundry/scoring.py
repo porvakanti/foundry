@@ -1,11 +1,11 @@
 """Gamification rules, tiered by maturity.
 
 * **Scaled** agents are not scored. They are in production, so the marketplace
-  shows adoption only — no competition, nothing to win.
+  shows adoption only - no competition, nothing to win.
 * **Pilots** are scored monthly by the Evaluation Agent and the winner is
   promoted to production. The weights are fixed:
   ``0.4 * impact + 0.3 * adoption + 0.2 * satisfaction + 0.1 * community``,
-  each component normalised 0–100 across the pilot cohort.
+  each component normalised 0-100 across the pilot cohort.
 * **Ideas** carry upvotes only; the top ideas each quarter get a build sprint.
 
 ``data/agents.json`` stores ``impact_score``: the figure the Evaluation Agent
@@ -53,7 +53,7 @@ class ScoreBreakdown:
 
 
 def _normalise(values: list[float]) -> list[float]:
-    """Min-max each component onto 0–100 across the cohort."""
+    """Min-max each component onto 0-100 across the cohort."""
     if not values:
         return []
     low, high = min(values), max(values)

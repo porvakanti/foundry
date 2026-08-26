@@ -15,13 +15,13 @@
     "how": [
       "Reads your category brief and recent sourcing history from the platform",
       "Drafts the RFx structure, evaluation criteria and timelines",
-      "You review, edit and publish — nothing is sent without your sign-off"
+      "You review, edit and publish - nothing is sent without your sign-off"
     ],
     "sample_prompts": [
       "Draft an RFQ for network maintenance services in Germany",
       "Shortlist suppliers for SD-WAN hardware under existing frameworks"
     ],
-    "canned_reply": "Here is a first-draft RFQ structure: scope of works, 6 evaluation criteria weighted for TCO, and a 4-week timeline. I found 7 qualified suppliers on active frameworks — want me to add them to the invite list?",
+    "canned_reply": "Here is a first-draft RFQ structure: scope of works, 6 evaluation criteria weighted for TCO, and a 4-week timeline. I found 7 qualified suppliers on active frameworks - want me to add them to the invite list?",
     "metrics": {
       "monthly_users": "412",
       "tasks_per_month": "1.2k",
@@ -49,7 +49,7 @@
     "impact_score": 0,
     "hours_saved_per_month": 0,
     "pilot_users": 0,
-    "trend": "— 0",
+    "trend": "- 0",
     "deep_link": null
   },
   {
@@ -74,7 +74,7 @@
       "Which supplier contracts auto-renew in the next quarter?",
       "Summarise the liability caps across our top 10 IT vendors"
     ],
-    "canned_reply": "3 contracts auto-renew next quarter. Two have 60-day notice periods expiring within 3 weeks — I can draft the non-renewal notices now.",
+    "canned_reply": "3 contracts auto-renew next quarter. Two have 60-day notice periods expiring within 3 weeks - I can draft the non-renewal notices now.",
     "metrics": {
       "monthly_users": "208",
       "tasks_per_month": "640",
@@ -102,14 +102,14 @@
     "impact_score": 0,
     "hours_saved_per_month": 0,
     "pilot_users": 0,
-    "trend": "— 0",
+    "trend": "- 0",
     "deep_link": null
   },
   {
     "id": "spl",
     "name": "Spend Lens",
     "tagline": "Answers spend questions in plain language over the Looker spend models.",
-    "about": "Spend Lens is a conversational layer over our certified Looker spend models. It answers plain-language questions with charts and always shows the underlying query, so numbers are traceable to the certified model — no more spreadsheet forks.",
+    "about": "Spend Lens is a conversational layer over our certified Looker spend models. It answers plain-language questions with charts and always shows the underlying query, so numbers are traceable to the certified model - no more spreadsheet forks.",
     "maturity": "scaled",
     "platform": "Looker",
     "function": "Analytics",
@@ -127,7 +127,7 @@
       "Show tail spend by market for the last two quarters",
       "Which categories are trending over budget this year?"
     ],
-    "canned_reply": "Tail spend was €14.2M last two quarters, concentrated in 3 markets. Germany is up 18% QoQ — here is the breakdown by category with the model filters I used.",
+    "canned_reply": "Tail spend was €14.2M last two quarters, concentrated in 3 markets. Germany is up 18% QoQ - here is the breakdown by category with the model filters I used.",
     "metrics": {
       "monthly_users": "655",
       "tasks_per_month": "2.8k",
@@ -155,14 +155,14 @@
     "impact_score": 0,
     "hours_saved_per_month": 0,
     "pilot_users": 0,
-    "trend": "— 0",
+    "trend": "- 0",
     "deep_link": null
   },
   {
     "id": "poc",
     "name": "PO Chaser",
     "tagline": "Chases overdue POs and drafts polite supplier nudges straight into Outlook.",
-    "about": "PO Chaser watches your open POs and, when goods receipt or confirmation is overdue, drafts a chase email in your tone with the PO details attached. Built by Anita in Copilot Studio during the Q2 hack week — it is this month’s scale-up winner and is being promoted to production.",
+    "about": "PO Chaser watches your open POs and, when goods receipt or confirmation is overdue, drafts a chase email in your tone with the PO details attached. Built by Anita in Copilot Studio during the Q2 hack week - it is this month’s scale-up winner and is being promoted to production.",
     "maturity": "pilot",
     "platform": "Copilot",
     "function": "P2P",
@@ -174,13 +174,13 @@
     "how": [
       "Checks your open POs against confirmation and GR deadlines daily",
       "Drafts a chase email per overdue PO, matched to your writing tone",
-      "You send with one click — replies are threaded back to the PO"
+      "You send with one click - replies are threaded back to the PO"
     ],
     "sample_prompts": [
       "Which of my POs are overdue for confirmation?",
       "Draft chasers for everything overdue more than 5 days"
     ],
-    "canned_reply": "You have 6 POs overdue. I drafted 6 chasers — 4 friendly first nudges and 2 firmer follow-ups for the 10+ day ones. Review and send?",
+    "canned_reply": "You have 6 POs overdue. I drafted 6 chasers - 4 friendly first nudges and 2 firmer follow-ups for the 10+ day ones. Review and send?",
     "metrics": {
       "impact_score": 86,
       "community_votes": 214,
@@ -255,7 +255,7 @@
     "impact_score": 79,
     "hours_saved_per_month": 95,
     "pilot_users": 26,
-    "trend": "— 0",
+    "trend": "- 0",
     "deep_link": null
   },
   {
@@ -280,7 +280,7 @@
       "Where is supplier Acme in onboarding?",
       "What is blocking the 3 suppliers added last week?"
     ],
-    "canned_reply": "Acme is at step 4 of 6 — waiting on their insurance certificate (requested twice). The other 3 are unblocked and should clear this week.",
+    "canned_reply": "Acme is at step 4 of 6 - waiting on their insurance certificate (requested twice). The other 3 are unblocked and should clear this week.",
     "metrics": {
       "impact_score": 71,
       "community_votes": 154,
@@ -309,7 +309,7 @@
     "id": "sav",
     "name": "Savings Tracker",
     "tagline": "Logs savings initiatives from your notes and keeps the tracker up to date.",
-    "about": "Savings Tracker turns meeting notes and emails into structured savings entries — initiative, category, run-rate vs one-off, validation status — and syncs them to the central tracker so month-end reporting stops being a scavenger hunt.",
+    "about": "Savings Tracker turns meeting notes and emails into structured savings entries - initiative, category, run-rate vs one-off, validation status - and syncs them to the central tracker so month-end reporting stops being a scavenger hunt.",
     "maturity": "pilot",
     "platform": "Copilot",
     "function": "Analytics",
@@ -367,7 +367,7 @@
       "Summarise decisions from today’s supplier review board",
       "Which actions from last month are still open?"
     ],
-    "canned_reply": "3 decisions, 5 actions captured. 2 actions from last month are overdue — I’ve queued reminders to the owners for Monday.",
+    "canned_reply": "3 decisions, 5 actions captured. 2 actions from last month are overdue - I’ve queued reminders to the owners for Monday.",
     "metrics": {
       "impact_score": 55,
       "community_votes": 98,
@@ -382,14 +382,14 @@
     "impact_score": 55,
     "hours_saved_per_month": 45,
     "pilot_users": 22,
-    "trend": "— 0",
+    "trend": "- 0",
     "deep_link": null
   },
   {
     "id": "tst",
     "name": "Tail-Spend Triage",
     "tagline": "Auto-routes small purchase requests to catalogues, cards or quick quotes.",
-    "about": "An idea to automatically triage sub-€10k requests: route to an existing catalogue item, a purchasing card, or a lightweight 3-quote process — cutting cycle time for the long tail.",
+    "about": "An idea to automatically triage sub-€10k requests: route to an existing catalogue item, a purchasing card, or a lightweight 3-quote process - cutting cycle time for the long tail.",
     "maturity": "idea",
     "platform": "Copilot",
     "function": "Sourcing",
@@ -419,7 +419,7 @@
     "impact_score": 0,
     "hours_saved_per_month": 0,
     "pilot_users": 0,
-    "trend": "— 0",
+    "trend": "- 0",
     "deep_link": null
   },
   {
@@ -456,7 +456,7 @@
     "impact_score": 0,
     "hours_saved_per_month": 0,
     "pilot_users": 0,
-    "trend": "— 0",
+    "trend": "- 0",
     "deep_link": null
   },
   {
@@ -493,7 +493,7 @@
     "impact_score": 0,
     "hours_saved_per_month": 0,
     "pilot_users": 0,
-    "trend": "— 0",
+    "trend": "- 0",
     "deep_link": null
   }
 ]

@@ -1,4 +1,4 @@
-"""Looker — the conversational layer over the certified spend models."""
+"""Looker - the conversational layer over the certified spend models."""
 
 from __future__ import annotations
 
@@ -9,7 +9,7 @@ class LookerPlayground:
     """Deep-link into Looker; answers belong next to their charts.
 
     Looker answers come with a chart and the exact filters used, which is
-    the whole point of Spend Lens — flattening that to a text bubble would
+    the whole point of Spend Lens - flattening that to a text bubble would
     lose the traceability. So the marketplace deep-links out.
     """
 

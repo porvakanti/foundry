@@ -1,11 +1,11 @@
-"""Foundry — the VP&C Agent Marketplace pilot.
+"""Foundry - the VP&C Agent Marketplace pilot.
 
 Run with ``streamlit run app.py``.
 
 Navigation is registered here and rendered by ``foundry.components.header``:
 Streamlit's own nav is hidden so the marketplace can draw its own top bar while
 still getting real client-side page switching. Agent detail is registered but
-never linked — it is reached by opening a tile.
+never linked - it is reached by opening a tile.
 """
 
 from __future__ import annotations

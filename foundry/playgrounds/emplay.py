@@ -1,4 +1,4 @@
-"""Emplay — the supplier-built Sourcing Copilot platform."""
+"""Emplay - the supplier-built Sourcing Copilot platform."""
 
 from __future__ import annotations
 

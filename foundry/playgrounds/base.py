@@ -37,8 +37,8 @@ class Playground(Protocol):
 class CannedPlayground:
     """Pilot stand-in: returns the agent's scripted reply after a beat.
 
-    This is what the pilot actually runs on. It keeps the detail page honest —
-    the panel is labelled "sandbox · no real data" — while the real adapters
+    This is what the pilot actually runs on. It keeps the detail page honest -
+    the panel is labelled "sandbox · no real data" - while the real adapters
     below stay unimplemented.
     """
 
@@ -47,7 +47,7 @@ class CannedPlayground:
 
     def send(self, agent: Agent, message: str) -> str:
         if not agent.canned_reply:
-            return "Noted — this agent is still an idea, so no live responses yet."
+            return "Noted - this agent is still an idea, so no live responses yet."
         return agent.canned_reply
 
 

@@ -1,4 +1,4 @@
-"""Governance & RBAC — the admin view.
+"""Governance & RBAC - the admin view.
 
 Who is waiting for access to a restricted agent, and what the standing policy
 is for every governed agent. Open to every invited reviewer: seeing the RBAC
@@ -74,7 +74,7 @@ def _request_queue(requests: list[dict], pending: int) -> None:
     if not requests:
         st.markdown(
             '<div class="vf-panel" style="color:var(--ink3);font-size:13px">'
-            'Nothing waiting — the queue is clear.</div>', unsafe_allow_html=True)
+            'Nothing waiting - the queue is clear.</div>', unsafe_allow_html=True)
         return
 
     ordered = sorted(requests, key=lambda r: (r["status"] != "pending", r["id"]))
@@ -165,7 +165,7 @@ def _policy_table(governed: list) -> None:
 
 
 def _feedback_panel() -> None:
-    """What reviewers have told us, newest first."""
+    """What colleagues have told us, newest first."""
     store = get_feedback_store()
     entries = list(reversed(store.list()))
 
@@ -173,7 +173,7 @@ def _feedback_panel() -> None:
         f'<div style="height:28px"></div>'
         f'<div style="display:flex;align-items:center;gap:9px;margin-bottom:10px">'
         f'<span style="font-weight:800;font-size:15px;letter-spacing:-.02em">'
-        f'Reviewer feedback</span>'
+        f'Feedback from colleagues</span>'
         f'{ui.badge(str(len(entries)), "var(--purSoft)", "var(--pur)")}</div>',
         unsafe_allow_html=True,
     )
@@ -183,7 +183,7 @@ def _feedback_panel() -> None:
         if unsynced:
             cols = st.columns([3, 1])
             with cols[0]:
-                st.warning(f"{unsynced} not yet filed to GitHub — the API was "
+                st.warning(f"{unsynced} not yet filed to GitHub - the API was "
                            "unreachable when they were written.")
             with cols[1]:
                 if st.button("Retry sync", use_container_width=True):
@@ -201,7 +201,7 @@ def _feedback_panel() -> None:
     if not entries:
         st.markdown(
             '<div class="vf-panel" style="color:var(--ink3);font-size:13px">'
-            'Nothing yet — the Feedback button is in the header on every page.</div>',
+            'Nothing yet. The Feedback button is in the header on every page.</div>',
             unsafe_allow_html=True)
         return
 
