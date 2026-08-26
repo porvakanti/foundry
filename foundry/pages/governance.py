@@ -1,8 +1,8 @@
 """Governance & RBAC — the admin view.
 
 Who is waiting for access to a restricted agent, and what the standing policy
-is for every governed agent. Gated on ADMIN_EMAILS; when that isn't configured
-the page opens for everyone and says so, so a fresh deploy is never locked out.
+is for every governed agent. Open to every invited reviewer: seeing the RBAC
+queue is part of what the pilot is asking people to review.
 """
 
 from __future__ import annotations
@@ -11,8 +11,8 @@ import streamlit as st
 
 from foundry import components as ui
 from foundry import theme
-from foundry.auth import current_email, is_admin, require_auth
-from foundry.config import admin_emails
+from foundry.auth import current_email, require_auth
+from foundry.feedback import get_feedback_store
 from foundry.repo import display_name, get_repo
 
 AVG_APPROVAL = "0.8d"
@@ -21,11 +21,7 @@ AVG_APPROVAL = "0.8d"
 def render() -> None:
     require_auth()
     theme.apply()
-    ui.header()
-
-    if not is_admin():
-        _no_access()
-        return
+    ui.header("Governance")
 
     repo = get_repo()
     agents = repo.list_agents()
@@ -33,13 +29,6 @@ def render() -> None:
 
     ui.page_title("Governance & RBAC", back="← Home", back_key="gov_back",
                   badge_html=ui.badge("ADMIN VIEW", "var(--redSoft)", "var(--red)"))
-
-    if not admin_emails():
-        st.info(
-            "ADMIN_EMAILS is not configured, so every authenticated reviewer can see "
-            "this page. Set it in secrets or the environment to restrict the admin view.",
-            icon="ℹ️",
-        )
 
     governed = [a for a in agents if a.maturity != "idea"]
     pending = [r for r in requests if r["status"] == "pending"]
@@ -53,18 +42,7 @@ def render() -> None:
     with policies:
         _policy_table(governed)
 
-
-def _no_access() -> None:
-    st.markdown(
-        '<div class="vf-panel" style="text-align:center;padding:44px 20px;margin-top:20px">'
-        '<div style="font-size:19px;font-weight:800;letter-spacing:-.02em">'
-        'Governance is admin-only</div>'
-        '<div style="font-size:13px;color:var(--ink3);margin-top:8px;line-height:1.6;'
-        'max-width:420px;margin-left:auto;margin-right:auto">'
-        'Access requests and RBAC policy are managed by the VP&amp;C AI team. '
-        'Ask them to add your address if you need the admin view.</div></div>',
-        unsafe_allow_html=True,
-    )
+    _feedback_panel()
 
 
 def _kpis(pending: int, governed: int, restricted: int) -> None:
@@ -184,3 +162,64 @@ def _policy_table(governed: list) -> None:
         f'<thead><tr>{header}</tr></thead><tbody>{rows}</tbody></table></div>',
         unsafe_allow_html=True,
     )
+
+
+def _feedback_panel() -> None:
+    """What reviewers have told us, newest first."""
+    store = get_feedback_store()
+    entries = list(reversed(store.list()))
+
+    st.markdown(
+        f'<div style="height:28px"></div>'
+        f'<div style="display:flex;align-items:center;gap:9px;margin-bottom:10px">'
+        f'<span style="font-weight:800;font-size:15px;letter-spacing:-.02em">'
+        f'Reviewer feedback</span>'
+        f'{ui.badge(str(len(entries)), "var(--purSoft)", "var(--pur)")}</div>',
+        unsafe_allow_html=True,
+    )
+
+    if store.durable:
+        unsynced = sum(1 for e in entries if not e.synced)
+        if unsynced:
+            cols = st.columns([3, 1])
+            with cols[0]:
+                st.warning(f"{unsynced} not yet filed to GitHub — the API was "
+                           "unreachable when they were written.")
+            with cols[1]:
+                if st.button("Retry sync", use_container_width=True):
+                    pushed = store.retry_unsynced()
+                    st.toast(f"Filed {pushed} to GitHub.", icon="✅")
+                    st.rerun()
+    else:
+        st.info(
+            "Feedback is being kept on the app only, so it is lost when the app "
+            "sleeps or redeploys. Set GITHUB_TOKEN and GITHUB_REPO in secrets to "
+            "file each one as an issue instead.",
+            icon="ℹ️",
+        )
+
+    if not entries:
+        st.markdown(
+            '<div class="vf-panel" style="color:var(--ink3);font-size:13px">'
+            'Nothing yet — the Feedback button is in the header on every page.</div>',
+            unsafe_allow_html=True)
+        return
+
+    for entry in entries:
+        rating = f'{"★" * entry.stars}{"☆" * (5 - entry.stars)}' if entry.stars else ""
+        where = f"{entry.page} · {entry.agent_name}" if entry.agent_name else entry.page
+        link = (f' · <a href="{ui.esc(entry.issue_url)}" target="_blank" '
+                f'style="color:var(--red)">issue ↗</a>' if entry.issue_url else "")
+        st.markdown(
+            f'<div class="vf-panel" style="margin-bottom:8px">'
+            f'<div style="display:flex;justify-content:space-between;gap:12px;'
+            f'align-items:baseline;flex-wrap:wrap">'
+            f'<span style="font-size:13px;font-weight:700">{ui.esc(entry.topic)}</span>'
+            f'<span style="color:var(--org);font-size:12px">{rating}</span></div>'
+            f'<div style="font-size:13px;color:var(--ink2);line-height:1.55;margin-top:6px">'
+            f'{ui.esc(entry.text) or "<i>no comment</i>"}</div>'
+            f'<div class="vf-meta" style="margin-top:6px">{ui.esc(entry.who)} · '
+            f'{ui.esc(where)} · {ui.esc(entry.created_at[:16].replace("T", " "))}'
+            f'{link}</div></div>',
+            unsafe_allow_html=True,
+        )

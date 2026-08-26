@@ -20,7 +20,7 @@ CATEGORIES = {"all": "All", "scaled": "Scaled", "pilot": "Pilots", "idea": "Idea
 def render() -> None:
     require_auth()
     theme.apply()
-    ui.header()
+    ui.header("The Library")
 
     agents = get_repo().list_agents()
     voted = ui.voted_ids()

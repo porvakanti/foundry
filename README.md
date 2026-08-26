@@ -38,7 +38,10 @@ Every setting is read from Streamlit secrets first, then the environment — so
 | `AUTH_USER` | yes | `vpc` | Shared reviewer username |
 | `AUTH_PASS` | yes | — | Shared reviewer password. **Unset means nobody can sign in.** |
 | `ALLOWED_EMAIL_DOMAIN` | no | `vodafone.com` | Domain the reviewer's email must match |
-| `ADMIN_EMAILS` | no | — | Comma-separated emails that may open Governance. Unset means every reviewer sees the admin view, and the page says so. |
+| `REVIEWER_EMAILS` | no | — | The people invited to the pilot; mirror the Community Cloud viewer allowlist. Anyone not listed is turned away at sign-in. Unset opens the pilot to the whole domain. |
+| `ACCESS_CONTACT` | no | `Praveen` | Named in the "you're not authorised" message. |
+| `GITHUB_TOKEN` | no | — | Fine-grained token with Issues: read & write. Files reviewer feedback as issues so it survives a restart. |
+| `GITHUB_REPO` | no | — | `owner/repo` that feedback issues are filed against. **Must be private** — issues on a public repo are world-readable. |
 
 ## Deploy
 
@@ -69,7 +72,7 @@ That is fine for a pilot; see *Data* below for the durable path.
 
 ```bash
 pip install -r requirements.txt
-export AUTH_USER=... AUTH_PASS=... ADMIN_EMAILS=...
+export AUTH_USER=... AUTH_PASS=... REVIEWER_EMAILS=...
 streamlit run app.py --server.port 8501 --server.address 0.0.0.0
 ```
 
@@ -87,7 +90,7 @@ everything persists properly.
 | **Agent detail** | About, how it works, sample prompts, owner, per-maturity metrics and reviews — plus a playground that adapts to the agent (below). |
 | **Leaderboard** | The four scoring criteria, top-3 podium, full ranked table, past winners, and an expander that recomputes each score from its components. |
 | **Submit** | Three tracks — idea, Copilot agent, scale nomination — with distinct fields, persisted on submit. |
-| **Governance** | Admin-only. Pending access-request queue with approve/deny, and the standing RBAC policy per agent. |
+| **Governance** | Open to every invited reviewer. Pending access-request queue with approve/deny, the standing RBAC policy per agent, and everything reviewers have said via the Feedback button. |
 
 ### The playground adapts to the platform
 

@@ -389,7 +389,26 @@ hr, [data-testid="stDivider"] hr { border-color: var(--line2); }
 [data-testid="stDialog"] > div, [role="dialog"] {
   background-color: var(--card) !important; color: var(--ink) !important;
 }
+
+/* Streamlit draws its icons as Material Symbols ligatures. That font often
+   fails to load (blocked CDN, offline, corporate proxy), and the fallback is
+   the ligature's literal text -- which is why the password field showed the
+   word "visibility" spilling out of it. Swap in real glyphs so the controls
+   read correctly whether or not the icon font ever arrives. */
+[data-testid="stIconMaterial"] { font-size: 0 !important; line-height: 1; }
+[data-testid="stIconMaterial"]::after {
+  font-size: 15px; font-family: inherit; color: var(--ink3);
+}
+[data-testid="stTextInput"] [data-testid="stIconMaterial"]::after { content: "\25C9"; }
+[data-testid="stExpander"] [data-testid="stIconMaterial"]::after { content: "\25BE"; font-size: 12px; }
+[data-testid="stIconMaterial"]:not([data-testid="stTextInput"] *):not([data-testid="stExpander"] *)::after {
+  content: "\00B7";
+}
+
+/* The "Press Enter to submit form" hint overlaps a short field. */
+[data-testid="InputInstructions"] { display: none !important; }
 </style>
+
 
 
 

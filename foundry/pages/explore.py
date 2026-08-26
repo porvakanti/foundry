@@ -36,7 +36,7 @@ CTAS = [
 def render() -> None:
     require_auth()
     theme.apply()
-    ui.header()
+    ui.header("Explore")
 
     agents = get_repo().list_agents()
     voted = ui.voted_ids()
