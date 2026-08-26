@@ -149,7 +149,7 @@ def _ctas() -> None:
     cols = st.columns(3, gap="medium")
     for col, (track, glyph, title, sub, card, border, tint, fg) in zip(cols, CTAS):
         with col:
-            with st.container(border=True, key=f"cta_{track}"):
+            with st.container(border=True, key=f"card_cta_{track}"):
                 st.markdown(
                     f'<div style="display:flex;align-items:center;gap:11px">'
                     f'<div class="vf-mono" style="background:{tint};color:{fg};font-size:15px">'
@@ -197,7 +197,7 @@ def _for_you(agents, voted, ranks) -> None:
     cols = st.columns(len(picks), gap="medium")
     for col, agent in zip(cols, picks):
         with col:
-            with st.container(border=True, key=f"foryou_{agent.id}"):
+            with st.container(border=True, key=f"card_foryou_{agent.id}"):
                 st.markdown(
                     f'<div style="display:flex;align-items:center;gap:10px">'
                     f'{ui.monogram(agent)}'

@@ -111,7 +111,7 @@ def _request_row(req: dict) -> None:
 
     # Approve/Deny get their own top-level columns rather than a nested pair:
     # columns only nest one level deep, and a container does not reset that.
-    with st.container(border=True, key=f"req_{req['id']}"):
+    with st.container(border=True, key=f"card_req_{req['id']}"):
         body, approve_col, deny_col = st.columns([2.2, 0.62, 0.55],
                                                  vertical_alignment="center")
         with body:
