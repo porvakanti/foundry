@@ -73,7 +73,7 @@ WEIGHTS = [("Impact (hours saved)", "40%"), ("Adoption", "30%"),
 def render() -> None:
     require_auth()
     theme.apply()
-    ui.header()
+    ui.header("Submit")
 
     ui.page_title("Put something on the marketplace",
                   "Three tracks, one form. Everything lands with the VP&C AI team "

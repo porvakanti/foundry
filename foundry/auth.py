@@ -1,8 +1,19 @@
 """Pilot-grade authentication.
 
-Deliberately simple: one shared credential for all reviewers, then a Vodafone
-email address so we know who is voting and can count adoption. No email is
-ever sent — the domain check is the gate.
+Two steps, and it is worth being precise about what each one is for.
+
+1. A shared username and password. One credential for all reviewers.
+2. Who you are — used to attribute your votes, requests and feedback.
+
+Step 2 is NOT a security check and the UI does not pretend otherwise. A typed
+address can be anyone's, so when REVIEWER_EMAILS is configured the step becomes
+a pick-your-name list rather than a free-text box. Real access control lives in
+the app's Community Cloud viewer allowlist, which verifies each person's
+identity before Streamlit serves the app at all.
+
+Note that ``st.user`` cannot help here: since Streamlit 1.42 it no longer
+exposes the viewer's Community Cloud account email, so the signed-in identity
+is not readable from inside the app without a configured identity provider.
 
 PHASE 2 REPLACES THIS ENTIRELY with Entra ID SSO. At that point the reviewer's
 identity, their group memberships and therefore their agent entitlements all
@@ -17,7 +28,7 @@ from hmac import compare_digest
 import streamlit as st
 
 from foundry import theme
-from foundry.config import allowed_domain, setting
+from foundry.config import access_contact, allowed_domain, reviewer_emails, setting
 from foundry.repo import get_repo
 
 EMAIL_RE = re.compile(r"^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$")
@@ -43,14 +54,15 @@ def initials() -> str:
 def is_admin() -> bool:
     """Whether this reviewer may open Governance.
 
-    An unset ADMIN_EMAILS means "not configured" rather than "nobody", so a
-    fresh deploy is never locked out of the admin view — Governance says so
-    with a banner when that is the case.
-    """
-    from foundry.config import admin_emails
+    Every invited reviewer can, deliberately: the pilot is a review exercise,
+    and seeing the RBAC queue and access policies is part of what is being
+    reviewed. Membership of REVIEWER_EMAILS is the only gate, so there is no
+    second list to keep in step with the first.
 
-    admins = admin_emails()
-    return not admins or current_email().lower() in admins
+    Phase 2 reverses this — with Entra ID SSO the admin view belongs to the
+    VP&C AI team's group, not to everyone who can open the app.
+    """
+    return is_authenticated()
 
 
 def logout() -> None:
@@ -68,7 +80,13 @@ def check_credentials(user: str, password: str) -> bool:
 
 
 def check_email(email: str) -> tuple[bool, str]:
-    """Validate format and domain. Returns ``(ok, message)``."""
+    """Validate format, domain, and membership of the invited list.
+
+    The list is what stops a valid-looking address that belongs to nobody in
+    the pilot: without it, any @vodafone.com string would be accepted. Leaving
+    REVIEWER_EMAILS unset keeps the pilot open to the whole domain, which is
+    the sensible default before the reviewers are known.
+    """
     email = email.strip()
     domain = allowed_domain()
     if not EMAIL_RE.match(email):
@@ -77,6 +95,12 @@ def check_email(email: str) -> tuple[bool, str]:
         return False, (
             f"The marketplace pilot is open to @{domain} addresses only. "
             "Use your Vodafone address, or ask the VP&C AI team to add you."
+        )
+    reviewers = reviewer_emails()
+    if reviewers and email.lower() not in reviewers:
+        return False, (
+            f"You're not authorised to access this yet. "
+            f"Please reach out to {access_contact()} for access."
         )
     return True, ""
 
@@ -146,33 +170,41 @@ def _render_credentials_step() -> None:
 
 
 def _render_email_step() -> None:
+    """Ask who is reviewing, and check them against the invited list."""
     domain = allowed_domain()
+
     st.markdown(
-        f"<div style='font-weight:700;font-size:15px;margin-bottom:2px'>Almost there</div>"
-        f"<div style='font-size:12.5px;color:var(--ink3);margin-bottom:10px;line-height:1.5'>"
-        f"Tell us who you are so your votes and requests are attributed. "
-        f"We don't send anything — your @{domain} address is the gate.</div>",
+        "<div style='font-weight:700;font-size:15px;margin-bottom:2px'>Who's reviewing?</div>"
+        "<div style='font-size:12.5px;color:var(--ink3);margin-bottom:10px;line-height:1.5'>"
+        "So your votes, access requests and feedback are attributed to you. "
+        "We don't send anything to this address.</div>",
         unsafe_allow_html=True,
     )
+
     with st.form("login_email"):
-        email = st.text_input("Vodafone email", placeholder=f"firstname.lastname@{domain}")
+        email = st.text_input("Your Vodafone email",
+                              placeholder=f"firstname.lastname@{domain}")
         submitted = st.form_submit_button("Enter the marketplace", type="primary",
                                           use_container_width=True)
 
     if submitted:
         ok, message = check_email(email)
         if ok:
-            st.session_state["authenticated"] = True
-            st.session_state["email"] = email.strip().lower()
-            try:
-                get_repo().log_login(st.session_state["email"])
-            except Exception:
-                # Never block a reviewer because the login log is unwritable.
-                pass
-            st.rerun()
+            _sign_in(email)
         else:
             st.error(message)
 
     if st.button("← Back", use_container_width=True):
         st.session_state.pop("password_ok", None)
         st.rerun()
+
+
+def _sign_in(email: str) -> None:
+    st.session_state["authenticated"] = True
+    st.session_state["email"] = email.strip().lower()
+    try:
+        get_repo().log_login(st.session_state["email"])
+    except Exception:
+        # Never block a reviewer because the login log is unwritable.
+        pass
+    st.rerun()

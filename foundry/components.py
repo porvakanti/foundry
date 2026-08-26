@@ -15,7 +15,8 @@ from typing import Any
 import streamlit as st
 
 from foundry import concierge, nav, theme
-from foundry.auth import current_email, initials, is_admin, logout
+from foundry.feedback import TOPICS, Feedback, get_feedback_store
+from foundry.auth import current_email, initials, logout
 from foundry.config import VIEWER_ROLE
 from foundry.repo import Agent, get_repo
 
@@ -122,10 +123,16 @@ def page_title(title: str, subtitle: str = "", back: str | None = None,
 # header
 # --------------------------------------------------------------------------
 
-def header() -> None:
-    """The sticky-style top bar: brand, Concierge search, bell, theme, avatar."""
-    brand, search, bell, mode, avatar = st.columns(
-        [3.1, 4.2, 0.8, 0.8, 0.8], vertical_alignment="center"
+def header(page: str = "Marketplace") -> None:
+    """The sticky-style top bar: brand, Concierge search, feedback, bell, theme, avatar.
+
+    ``page`` is recorded so a piece of feedback carries the screen it was
+    written on, which is most of what makes it actionable later.
+    """
+    st.session_state["current_page"] = page
+    feedback_toast()
+    brand, search, say, bell, mode, avatar = st.columns(
+        [2.7, 3.6, 1.0, 0.7, 0.7, 0.7], vertical_alignment="center"
     )
 
     with brand:
@@ -142,6 +149,11 @@ def header() -> None:
             placeholder="Search, or describe a task, then press ↵ — the Concierge matches agents",
             label_visibility="collapsed",
         )
+
+    with say:
+        if st.button("Feedback", key="open_feedback", use_container_width=True,
+                     help="Tell us what works and what doesn't — it goes straight to the team"):
+            feedback_dialog()
 
     with bell:
         with st.popover("🔔", use_container_width=True):
@@ -169,7 +181,7 @@ def header() -> None:
             st.markdown(
                 f'<div style="font-size:13px;font-weight:600">{esc(current_email())}</div>'
                 f'<div style="font-size:11.5px;color:var(--ink3);margin-top:2px">'
-                f'{esc(VIEWER_ROLE)}{" · admin" if is_admin() else ""}</div>',
+                f'{esc(VIEWER_ROLE)}</div>',
                 unsafe_allow_html=True,
             )
             if st.button("Sign out", key="signout", use_container_width=True):
@@ -185,8 +197,7 @@ def header() -> None:
 
 
 def _nav_row() -> None:
-    items = [(key, label) for key, label in nav.NAV_ITEMS
-             if key != "governance" or is_admin()]
+    items = list(nav.NAV_ITEMS)
     cols = st.columns(len(items) + 3)
     for col, (key, label) in zip(cols, items):
         with col:
@@ -394,3 +405,90 @@ def card_row(agents: list[Agent], render, per_row: int = 3, **kwargs: Any) -> No
         for col, agent in zip(cols, chunk):
             with col:
                 render(agent, **kwargs)
+
+
+# --------------------------------------------------------------------------
+# feedback
+# --------------------------------------------------------------------------
+
+def current_context() -> tuple[str, str | None, str | None]:
+    """Where the reviewer is right now, so feedback arrives with its context."""
+    page = st.session_state.get("current_page", "Marketplace")
+    agent_id = st.session_state.get("agent_id")
+    agent_name = None
+    if page == "Agent detail" and agent_id:
+        agent = get_repo().get_agent(agent_id)
+        agent_name = agent.name if agent else None
+    return page, agent_id, agent_name
+
+
+@st.dialog("Tell us what you think")
+def feedback_dialog() -> None:
+    """Capture feedback with the page (and agent) it was written on."""
+    page, agent_id, agent_name = current_context()
+    store = get_feedback_store()
+
+    where = f"{page} · {agent_name}" if agent_name else page
+    st.markdown(
+        f'<div style="font-size:12.5px;color:var(--ink3);line-height:1.55">'
+        f'You\'re on <b>{esc(where)}</b>. Anything that\'s broken, confusing or '
+        f'missing — the blunter the better, it all reaches the VP&amp;C AI team.</div>',
+        unsafe_allow_html=True,
+    )
+
+    # Deliberately not st.feedback("stars"): that widget draws its stars as
+    # Material Symbols ligatures, and that font does not load reliably (it is
+    # the same failure that printed "visibility" inside the password box).
+    # Plain ★ characters render in any font.
+    st.markdown('<div class="vf-metric-k" style="margin:14px 0 2px">'
+                'HOW IS THE MARKETPLACE SO FAR?</div>', unsafe_allow_html=True)
+    stars = st.segmented_control(
+        "Rating", options=[1, 2, 3, 4, 5], format_func=lambda n: "★" * n,
+        key="fb_stars", label_visibility="collapsed",
+    )
+
+    with st.form("feedback_form", border=False):
+        topic = st.selectbox("What's this about?", TOPICS)
+        text = st.text_area(
+            "Your feedback",
+            placeholder="e.g. The leaderboard is the bit my team would use weekly — "
+                        "but I couldn't tell how a pilot gets nominated.",
+            height=120,
+        )
+        cancel, send = st.columns(2)
+        with cancel:
+            cancelled = st.form_submit_button("Cancel", use_container_width=True)
+        with send:
+            sent = st.form_submit_button("Send feedback", type="primary",
+                                         use_container_width=True)
+
+    if not store.durable:
+        st.caption(
+            "Heads up: durable storage isn't configured, so this is kept only "
+            "until the app restarts. See GITHUB_TOKEN in the secrets example."
+        )
+
+    if cancelled:
+        st.rerun()
+    if sent:
+        if not text.strip() and stars is None:
+            st.error("Add a comment or a rating — otherwise there's nothing to send.")
+            return
+        entry = store.add(Feedback(
+            who=current_email(), page=page, topic=topic, text=text,
+            stars=stars,
+            agent_id=agent_id, agent_name=agent_name,
+        ))
+        st.session_state["feedback_sent"] = entry.synced
+        st.rerun()
+
+
+def feedback_toast() -> None:
+    """Confirm a send once, on the rerun after the dialog closes."""
+    if "feedback_sent" not in st.session_state:
+        return
+    synced = st.session_state.pop("feedback_sent")
+    if synced:
+        st.toast("Thanks — your feedback is with the team.", icon="✅")
+    else:
+        st.toast("Thanks — feedback saved on the app.", icon="✅")

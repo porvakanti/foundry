@@ -46,14 +46,27 @@ def setting(key: str, default: str = "") -> str:
     return os.environ.get(key, default)
 
 
-def admin_emails() -> set[str]:
-    """Emails allowed into Governance.
+def reviewer_emails() -> list[str]:
+    """The people invited to review the pilot.
 
-    Empty means "not configured": every authenticated reviewer gets the admin
-    view and the page says so, so a fresh deploy is never locked out of it.
+    Mirrors the viewer allowlist configured in the app's Community Cloud
+    settings. Holding a copy here lets the app reject an address that belongs
+    to nobody in the pilot, rather than accepting any @vodafone.com string
+    someone happens to type. Leave unset to keep the pilot open to the whole
+    domain.
     """
-    raw = setting("ADMIN_EMAILS", "")
-    return {e.strip().lower() for e in raw.split(",") if e.strip()}
+    raw = setting("REVIEWER_EMAILS", "")
+    seen: list[str] = []
+    for email in raw.split(","):
+        email = email.strip().lower()
+        if email and email not in seen:
+            seen.append(email)
+    return seen
+
+
+def access_contact() -> str:
+    """Who an uninvited reviewer should ask for access."""
+    return setting("ACCESS_CONTACT", "Praveen")
 
 
 def allowed_domain() -> str:
