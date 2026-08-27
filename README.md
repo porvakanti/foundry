@@ -40,8 +40,8 @@ Every setting is read from Streamlit secrets first, then the environment - so
 | `ALLOWED_EMAIL_DOMAIN` | no | `vodafone.com` | Domain the reviewer's email must match |
 | `ALLOWED_EMAILS` | no | - | The people invited to use the app; mirror the Community Cloud viewer allowlist. Anyone not listed is turned away at sign-in. Unset opens the app to the whole domain. The older name `REVIEWER_EMAILS` is still honoured. |
 | `ACCESS_CONTACT` | no | `Praveen` | Named in the "you're not authorised" message. |
-| `GITHUB_TOKEN` | no | - | Fine-grained token with Issues: read & write. Files reviewer feedback as issues so it survives a restart. |
-| `GITHUB_REPO` | no | - | `owner/repo` that feedback issues are filed against. **Must be private** - issues on a public repo are world-readable. |
+| `GITHUB_TOKEN` | no | - | Fine-grained token with Issues: read & write. Files feedback as issues so it survives a restart. See *Feedback* below. |
+| `GITHUB_REPO` | no | - | `owner/repo` that feedback issues are filed against. Issues on a public repo are world-readable, so feedback is only as private as this repository. |
 
 ## Deploy
 
@@ -141,6 +141,35 @@ foundry/
 data/                      agents.json + requests / submissions / votes / logins
 design/                    the HTML spec, screenshots and logo - do not edit
 ```
+
+## Feedback
+
+Everyone gets a **Feedback** button in the header. The dialog captures the page
+it was opened from, and the agent if there was one, so a comment arrives with
+its context. Everything lands on Governance under *Feedback from colleagues*.
+
+Feedback is filed as a GitHub issue, because Community Cloud wipes its disk when
+the app sleeps. The local `data/feedback.json` is a cache so the app can show
+comments back without an API round trip.
+
+**Setting it up.** If the repository is also going private, the order matters:
+
+1. Grant Community Cloud the wider GitHub scope **first**. Private repos need an
+   OAuth scope beyond the public default, and without it the next redeploy fails
+   with *"You do not have access to this app or it does not exist"*. If that
+   happens, revoke Streamlit at `github.com/settings/applications` and sign in to
+   Community Cloud again to be re-prompted.
+2. Flip the repository to private.
+3. Create a fine-grained token limited to this repository, with **Issues: read &
+   write**.
+4. Put `GITHUB_TOKEN` and `GITHUB_REPO` in secrets, then press **Test
+   connection** on Governance.
+
+**When it goes wrong**, it says so rather than failing quietly. A write that
+cannot reach GitHub is still kept locally and marked unsynced, with a *Retry
+sync* button. *Test connection* reports the specific cause and quotes whatever
+answered, so a wrong token, a repo the token was not granted, or a proxy sitting
+in the way are all told apart rather than guessed at.
 
 ## Data
 

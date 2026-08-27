@@ -178,25 +178,7 @@ def _feedback_panel() -> None:
         unsafe_allow_html=True,
     )
 
-    if store.durable:
-        unsynced = sum(1 for e in entries if not e.synced)
-        if unsynced:
-            cols = st.columns([3, 1])
-            with cols[0]:
-                st.warning(f"{unsynced} not yet filed to GitHub - the API was "
-                           "unreachable when they were written.")
-            with cols[1]:
-                if st.button("Retry sync", use_container_width=True):
-                    pushed = store.retry_unsynced()
-                    st.toast(f"Filed {pushed} to GitHub.", icon="✅")
-                    st.rerun()
-    else:
-        st.info(
-            "Feedback is being kept on the app only, so it is lost when the app "
-            "sleeps or redeploys. Set GITHUB_TOKEN and GITHUB_REPO in secrets to "
-            "file each one as an issue instead.",
-            icon="ℹ️",
-        )
+    _storage_status(store, entries)
 
     if not entries:
         st.markdown(
@@ -223,3 +205,43 @@ def _feedback_panel() -> None:
             f'{link}</div></div>',
             unsafe_allow_html=True,
         )
+
+
+def _storage_status(store, entries) -> None:
+    """Say where feedback is going, and let someone prove it from the app.
+
+    A failed write is silent for whoever wrote the feedback, by design. That
+    makes a misconfigured token look exactly like "nothing happened", so the
+    check has to live somewhere a person can press it.
+    """
+    status, test = st.columns([3, 1], vertical_alignment="center")
+
+    with status:
+        if not store.durable:
+            st.info(
+                "Feedback is kept on the app only, so it is lost when the app sleeps "
+                "or redeploys. Set GITHUB_TOKEN and GITHUB_REPO in secrets to file "
+                "each one as a GitHub issue instead.",
+                icon="ℹ️",
+            )
+        else:
+            unsynced = [e for e in entries if not e.synced]
+            if unsynced:
+                reason = store.last_error or "GitHub was unreachable when they were written."
+                st.warning(f"{len(unsynced)} not filed to GitHub. {reason}")
+            else:
+                st.success(f"Feedback is filed to {store.repo} as issues.", icon="✅")
+
+    with test:
+        if st.button("Test connection", use_container_width=True):
+            st.session_state["fb_conn"] = store.check_connection()
+        if entries and store.durable and any(not e.synced for e in entries):
+            if st.button("Retry sync", use_container_width=True, type="primary"):
+                pushed = store.retry_unsynced()
+                st.toast(f"Filed {pushed} to GitHub.", icon="✅")
+                st.rerun()
+
+    result = st.session_state.get("fb_conn")
+    if result:
+        ok, message = result
+        (st.success if ok else st.error)(message)

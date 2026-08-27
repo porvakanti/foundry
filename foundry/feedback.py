@@ -96,6 +96,8 @@ class FeedbackStore:
 
     def __init__(self, path: Path = FEEDBACK_FILE) -> None:
         self.path = path
+        #: Why the last GitHub write failed, for the Governance status panel.
+        self.last_error: str | None = None
 
     # -- configuration ---------------------------------------------------
     @property
@@ -171,10 +173,56 @@ class FeedbackStore:
         )
         try:
             with urllib.request.urlopen(request, timeout=REQUEST_TIMEOUT) as response:
+                self.last_error = None
                 return json.load(response).get("html_url")
-        except (urllib.error.URLError, OSError, json.JSONDecodeError, ValueError):
-            # Unreachable, unauthorised, or rate limited - keep the comment locally.
+        except urllib.error.HTTPError as exc:
+            self.last_error = _explain(exc.code, self.repo, _detail(exc))
             return None
+        except (urllib.error.URLError, OSError, json.JSONDecodeError, ValueError) as exc:
+            self.last_error = f"Could not reach GitHub: {exc}"
+            return None
+
+    def check_connection(self) -> tuple[bool, str]:
+        """Probe the configured repo and say plainly what is wrong.
+
+        A failed feedback write is deliberately silent for the person writing
+        it, so without this the only symptom of a bad token is "nothing
+        happened". This turns that into an answer.
+        """
+        if not self.token and not self.repo:
+            return False, ("GITHUB_TOKEN and GITHUB_REPO are not set, so feedback "
+                           "is kept on the app only and lost when it restarts.")
+        if not self.token:
+            return False, "GITHUB_REPO is set but GITHUB_TOKEN is missing."
+        if not self.repo:
+            return False, "GITHUB_TOKEN is set but GITHUB_REPO is missing."
+        if "/" not in self.repo:
+            return False, f'GITHUB_REPO should look like "owner/repo", not "{self.repo}".'
+
+        request = urllib.request.Request(
+            f"{API_ROOT}/repos/{self.repo}",
+            headers={
+                "Authorization": f"Bearer {self.token}",
+                "Accept": "application/vnd.github+json",
+                "X-GitHub-Api-Version": "2022-11-28",
+                "User-Agent": "vpc-agent-marketplace",
+            },
+        )
+        try:
+            with urllib.request.urlopen(request, timeout=REQUEST_TIMEOUT) as response:
+                repo = json.load(response)
+            if not repo.get("has_issues", True):
+                return False, (f"{self.repo} is reachable, but Issues are disabled on it. "
+                               "Turn them on in the repository settings.")
+            visibility = "private" if repo.get("private") else "PUBLIC"
+            note = ("" if repo.get("private") else
+                    "  Warning: this repository is public, so feedback issues are "
+                    "readable by anyone.")
+            return True, f"Connected to {self.repo} ({visibility}).{note}"
+        except urllib.error.HTTPError as exc:
+            return False, _explain(exc.code, self.repo, _detail(exc))
+        except (urllib.error.URLError, OSError, json.JSONDecodeError, ValueError) as exc:
+            return False, f"Could not reach GitHub: {exc}"
 
     def retry_unsynced(self) -> int:
         """Push anything that was written while GitHub was unreachable."""
@@ -193,6 +241,36 @@ class FeedbackStore:
             if pushed:
                 self._write(rows)
         return pushed
+
+
+def _detail(exc: urllib.error.HTTPError) -> str:
+    """The server's own explanation, which beats any guess made from the code.
+
+    Anything between the app and GitHub - a corporate proxy, a gateway - can
+    answer instead of GitHub and will say so here, which is worth showing
+    verbatim rather than reinterpreting.
+    """
+    try:
+        body = json.loads(exc.read().decode("utf-8", "replace"))
+    except (json.JSONDecodeError, ValueError, OSError):
+        return ""
+    message = body.get("message", "") if isinstance(body, dict) else ""
+    return f" Response: {message}" if message else ""
+
+
+def _explain(status: int, repo: str, detail: str = "") -> str:
+    """Turn a status code into something actionable, plus what the server said."""
+    guess = {
+        401: "The token was rejected (401). It is wrong, expired, or revoked.",
+        403: (f"Forbidden (403). Usually the token lacks Issues: read & write on "
+              f"{repo}, or a rate limit was hit."),
+        404: (f"{repo} not found (404). Either the name is wrong, or the token was "
+              f"not granted access to it. A fine-grained token must list the "
+              f"repository explicitly."),
+        410: f"Issues are disabled on {repo} (410). Turn them on in the settings.",
+        422: "The issue contents were rejected (422).",
+    }.get(status, f"HTTP {status}.")
+    return guess + detail
 
 
 @st.cache_resource
