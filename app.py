@@ -4,8 +4,9 @@ Run with ``streamlit run app.py``.
 
 Navigation is registered here and rendered by ``foundry.components.header``:
 Streamlit's own nav is hidden so the marketplace can draw its own top bar while
-still getting real client-side page switching. Agent detail is registered but
-never linked - it is reached by opening a tile.
+still getting real client-side page switching. Agent detail and stage mode are
+registered but never linked: the first is reached by opening a tile, the second
+by going to /stage.
 """
 
 from __future__ import annotations
@@ -13,8 +14,8 @@ from __future__ import annotations
 import streamlit as st
 
 from foundry import nav, theme
-from foundry.auth import is_authenticated, render_login
-from foundry.pages import agent, explore, governance, leaderboard, library, submit
+from foundry.pages import (agent, explore, governance, leaderboard, library, stage,
+                           submit)
 
 st.set_page_config(
     page_title="VP&C Agent Marketplace",
@@ -25,12 +26,12 @@ st.set_page_config(
 
 
 def main() -> None:
-    # The login gate runs before navigation so an unauthenticated visitor never
-    # sees a page shell. Phase 2 replaces this with an Entra ID SSO redirect.
-    if not is_authenticated():
-        render_login()
-        return
-
+    # Navigation is registered even when signed out, and each page guards itself
+    # with require_auth(). Gating before st.navigation meant Streamlit never
+    # learned the requested path and reset the URL to "/", so signing in from a
+    # deep link landed on Explore instead: opening /stage for a presentation and
+    # arriving somewhere else. Phase 2 replaces the gate with an Entra ID SSO
+    # redirect, which keeps the same property.
     pages = [
         st.Page(explore.render, title="Explore", url_path="explore", default=True),
         st.Page(library.render, title="The Library", url_path="library"),
@@ -38,9 +39,11 @@ def main() -> None:
         st.Page(submit.render, title="Submit", url_path="submit"),
         st.Page(governance.render, title="Governance", url_path="governance"),
         st.Page(agent.render, title="Agent", url_path="agent"),
+        st.Page(stage.render, title="Stage", url_path="stage"),
     ]
     for key, page in zip(
-        ["explore", "library", "leaderboard", "submit", "governance", "agent"], pages
+        ["explore", "library", "leaderboard", "submit", "governance", "agent", "stage"],
+        pages,
     ):
         nav.register(key, page)
 

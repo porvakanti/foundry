@@ -116,6 +116,11 @@ def require_auth() -> None:
 def render_login() -> None:
     """Two-step login: shared credential, then Vodafone email."""
     theme.apply()
+    first_step = not st.session_state.get("password_ok")
+    strapline = (
+        '<div style="font-size:13.5px;color:var(--ink3);margin-top:8px;line-height:1.5">'
+        'Every VP&amp;C agent, in one place.</div>' if first_step else ""
+    )
     st.markdown(
         f"""
         <div class="vf-fade" style="max-width:420px;margin:6vh auto 20px;text-align:center">
@@ -123,10 +128,7 @@ def render_login() -> None:
           <div style="font-size:30px;font-weight:800;letter-spacing:-.03em;line-height:1.1">
             Agent Marketplace
           </div>
-          <div style="font-size:13.5px;color:var(--ink3);margin-top:8px;line-height:1.5">
-            Every VP&amp;C agent, in one place. Sign in with the credentials
-            the VP&amp;C AI team shared with you.
-          </div>
+          {strapline}
         </div>
         """,
         unsafe_allow_html=True,
@@ -140,9 +142,8 @@ def render_login() -> None:
             _render_email_step()
 
         st.markdown(
-            "<div style='text-align:center;font-size:11px;color:var(--ink4);margin-top:22px;line-height:1.5'>"
-            "Pilot access only · no real supplier or contract data<br>"
-            "Phase 2 replaces this sign-in with Vodafone SSO"
+            "<div style='text-align:center;font-size:11px;color:var(--ink4);margin-top:22px'>"
+            "Pilot access only · no real supplier or contract data"
             "</div>",
             unsafe_allow_html=True,
         )
@@ -170,9 +171,7 @@ def _render_credentials_step() -> None:
 
 
 def _render_email_step() -> None:
-    """Ask who is reviewing, and check them against the invited list."""
-    domain = allowed_domain()
-
+    """Ask who is signing in, and check them against the invited list."""
     st.markdown(
         "<div style='font-weight:700;font-size:15px;margin-bottom:2px'>Who are you?</div>"
         "<div style='font-size:12.5px;color:var(--ink3);margin-bottom:10px;line-height:1.5'>"
@@ -182,8 +181,7 @@ def _render_email_step() -> None:
     )
 
     with st.form("login_email"):
-        email = st.text_input("Your Vodafone email",
-                              placeholder=f"firstname.lastname@{domain}")
+        email = st.text_input("Your Vodafone email")
         submitted = st.form_submit_button("Enter the marketplace", type="primary",
                                           use_container_width=True)
 
