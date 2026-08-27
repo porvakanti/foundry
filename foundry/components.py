@@ -124,7 +124,8 @@ def page_title(title: str, subtitle: str = "", back: str | None = None,
 
 def header() -> None:
     """The sticky-style top bar: brand, Concierge search, bell, theme, avatar."""
-    brand, search, bell, mode, avatar = st.columns(
+    topbar = st.container(key="topbar")
+    brand, search, bell, mode, avatar = topbar.columns(
         [3.1, 4.2, 0.8, 0.8, 0.8], vertical_alignment="center"
     )
 
@@ -185,11 +186,18 @@ def header() -> None:
 
 
 def _nav_row() -> None:
+    """The page links.
+
+    Keyed so the stylesheet can keep this row horizontal on a narrow screen
+    while every other column group stacks: eight stacked rows of nav would
+    push the page itself off the phone.
+    """
     items = list(nav.NAV_ITEMS)
-    cols = st.columns(len(items) + 3)
-    for col, (key, label) in zip(cols, items):
-        with col:
-            st.page_link(nav.page(key), label=label)
+    with st.container(key="topnav"):
+        cols = st.columns(len(items) + 3)
+        for col, (key, label) in zip(cols, items):
+            with col:
+                st.page_link(nav.page(key), label=label)
 
 
 def _concierge_panel() -> None:

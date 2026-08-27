@@ -83,22 +83,18 @@ def _hero() -> None:
           <div style="position:absolute;bottom:-160px;left:30%;width:420px;height:420px;
                border-radius:99em;background:radial-gradient(circle,rgba(0,124,146,.09),transparent 65%);
                pointer-events:none"></div>
-          <div style="position:relative;display:grid;
-               grid-template-columns:minmax(0,1fr) clamp(200px,26vw,320px);
-               gap:28px;align-items:center">
-          <div>
-            <div style="font-size:clamp(32px,4.2vw,48px);line-height:1.05;letter-spacing:-.035em;
-                 font-weight:800">Every VP&amp;C agent.<br>
+          <div class="vf-hero-grid">
+          <div class="vf-hero-copy">
+            <div class="vf-hero-h1">Every VP&amp;C agent.<br>
               <span style="background:linear-gradient(90deg,#E60000,#9C2AA0 60%,#007C92);
                     -webkit-background-clip:text;background-clip:text;color:transparent">
                 One marketplace.</span></div>
-            <div style="font-size:14.5px;color:var(--ink2);margin-top:16px;line-height:1.6;
-                 max-width:520px">
+            <div class="vf-hero-sub">
               Discover, try and scale the AI agents built across Vodafone Procurement &amp;
               Connectivity - from production platforms to the Copilot agent your colleague
               built last week.</div>
           </div>
-          <div style="display:flex;flex-direction:column;gap:12px">
+          <div class="vf-hero-cards">
             <div style="background:var(--card);border-radius:14px;padding:12px 14px;
                  box-shadow:var(--shadowUp);transform:translateX(6px)">
               <div style="display:flex;align-items:center;gap:9px">

@@ -33,7 +33,10 @@ def main() -> None:
     # arriving somewhere else. Phase 2 replaces the gate with an Entra ID SSO
     # redirect, which keeps the same property.
     pages = [
-        st.Page(explore.render, title="Explore", url_path="explore", default=True),
+        # The default page is served at "/", so it must not also claim a url_path:
+        # Streamlit would not route /explore and answered it with a blocking
+        # "Page not found" modal over the app.
+        st.Page(explore.render, title="Explore", default=True),
         st.Page(library.render, title="The Library", url_path="library"),
         st.Page(leaderboard.render, title="Leaderboard", url_path="leaderboard"),
         st.Page(submit.render, title="Submit", url_path="submit"),
