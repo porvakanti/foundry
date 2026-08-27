@@ -25,7 +25,7 @@ PAST_WINNERS = [
 def render() -> None:
     require_auth()
     theme.apply()
-    ui.header("Leaderboard")
+    ui.header()
 
     agents = get_repo().list_agents()
     pilots = scoring.ranked_pilots(agents)

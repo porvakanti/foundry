@@ -3,7 +3,7 @@
 Two steps, and it is worth being precise about what each one is for.
 
 1. A shared username and password. One credential for everyone in VP&C.
-2. Who you are, used to attribute your votes, requests and feedback.
+2. Who you are, used to attribute your votes and access requests.
 
 Step 2 is NOT a security check on its own and the UI does not pretend
 otherwise. A typed address can be anyone's, so it is checked against the list
@@ -176,7 +176,7 @@ def _render_email_step() -> None:
     st.markdown(
         "<div style='font-weight:700;font-size:15px;margin-bottom:2px'>Who are you?</div>"
         "<div style='font-size:12.5px;color:var(--ink3);margin-bottom:10px;line-height:1.5'>"
-        "So your votes, access requests and feedback are attributed to you. "
+        "So your votes and access requests are attributed to you. "
         "We don't send anything to this address.</div>",
         unsafe_allow_html=True,
     )

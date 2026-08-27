@@ -24,7 +24,7 @@ TYPING_DELAY_SECONDS = 0.9
 def render() -> None:
     require_auth()
     theme.apply()
-    ui.header("Agent detail")
+    ui.header()
 
     sent_for = st.session_state.pop("access_sent", None)
     if sent_for:
