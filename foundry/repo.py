@@ -57,7 +57,7 @@ class Agent:
     impact_score: int = 0
     hours_saved_per_month: int = 0
     pilot_users: int = 0
-    trend: str = "— 0"
+    trend: str = "- 0"
     deep_link: str | None = None
 
     @property
@@ -248,6 +248,6 @@ def get_repo() -> AgentRepo:
     """The repository the whole app talks to.
 
     Phase 2: return one of the adapters from ``foundry.datastores`` here
-    instead — nothing else in the app needs to change.
+    instead - nothing else in the app needs to change.
     """
     return JSONFileRepo()

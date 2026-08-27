@@ -1,7 +1,7 @@
 """Reviewer feedback, captured in-app and persisted outside the container.
 
 Community Cloud's filesystem is ephemeral: it is wiped when the app sleeps or
-redeploys. That is survivable for demo votes, but not for a review round —
+redeploys. That is survivable for demo votes, but not for a review round -
 losing your boss's comments overnight is exactly the failure this has to avoid.
 
 So GitHub is the durable store. Each piece of feedback is filed as an issue on
@@ -14,7 +14,7 @@ Configure with two secrets:
     GITHUB_TOKEN = "github_pat_..."     # fine-grained, Issues: read & write
     GITHUB_REPO  = "porvakanti/foundry"
 
-Without them the store still works and writes to JSON only — feedback is then
+Without them the store still works and writes to JSON only - feedback is then
 as ephemeral as everything else, and the Governance page says so.
 
 NOTE: the repository must be PRIVATE before this is used for real. Issues on a
@@ -68,7 +68,7 @@ class Feedback:
 
     def title(self) -> str:
         subject = self.agent_name or self.page
-        return f"[feedback] {subject} — {self.topic}"
+        return f"[feedback] {subject} - {self.topic}"
 
     def issue_body(self) -> str:
         rating = f"{self.stars}/5" if self.stars else "not rated"
@@ -134,7 +134,7 @@ class FeedbackStore:
 
     # -- writing ---------------------------------------------------------
     def add(self, entry: Feedback) -> Feedback:
-        """Persist one piece of feedback. Never raises — losing a comment to a
+        """Persist one piece of feedback. Never raises - losing a comment to a
         network error is worse than losing the durability guarantee, so a failed
         push is recorded as unsynced rather than surfaced as a crash."""
         entry.created_at = datetime.now(timezone.utc).isoformat(timespec="seconds")
@@ -173,7 +173,7 @@ class FeedbackStore:
             with urllib.request.urlopen(request, timeout=REQUEST_TIMEOUT) as response:
                 return json.load(response).get("html_url")
         except (urllib.error.URLError, OSError, json.JSONDecodeError, ValueError):
-            # Unreachable, unauthorised, or rate limited — keep the comment locally.
+            # Unreachable, unauthorised, or rate limited - keep the comment locally.
             return None
 
     def retry_unsynced(self) -> int:

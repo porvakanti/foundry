@@ -1,8 +1,8 @@
-"""Google Cloud adapter — BigQuery for analytics, Firestore for app state.
+"""Google Cloud adapter - BigQuery for analytics, Firestore for app state.
 
 Reads the agent catalogue and usage telemetry from BigQuery (the same
 warehouse the Evaluation Agent scores pilots from) and keeps mutable app
-state — votes, access requests, submissions — in Firestore, which gives
+state - votes, access requests, submissions - in Firestore, which gives
 us per-document writes without a read-modify-write race.
 """
 
@@ -38,7 +38,7 @@ class GCPRepo:
     def get_agent(self, agent_id: str) -> Agent | None:
         """Return one tile by id, or None.
 
-        Phase 2: Same query filtered by agent id — or a Firestore document read if the
+        Phase 2: Same query filtered by agent id - or a Firestore document read if the
         catalogue is mirrored there for latency.
         """
         raise NotImplementedError("GCPRepo is a Phase 2 stub")

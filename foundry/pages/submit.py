@@ -1,4 +1,4 @@
-"""Submit — three tracks, one form.
+"""Submit - three tracks, one form.
 
 An idea, a Copilot agent you built, or a nomination to scale. The fields
 differ per track; everything persists to ``data/submissions.json``.
@@ -14,7 +14,7 @@ from foundry.auth import current_email, require_auth
 from foundry.repo import get_repo
 
 TRACKS = {
-    "idea": ("+", "An idea", "Just the problem — no build needed",
+    "idea": ("+", "An idea", "Just the problem - no build needed",
              "var(--redSoft)", "var(--red)"),
     "agent": ("◆", "A Copilot agent", "Gets a tile + enters the monthly scoring",
               "var(--purSoft)", "var(--pur)"),
@@ -33,13 +33,13 @@ FIELDS = {
         ("Agent name", "e.g. PO Chaser", False),
         ("Link to your Copilot agent", "https://copilotstudio.microsoft.com/…", False),
         ("What does it do?",
-         "One paragraph — what it automates, for whom, with what data", True),
+         "One paragraph - what it automates, for whom, with what data", True),
         ("Function", "Sourcing / Contracts / P2P / Supplier Mgmt / Analytics / Governance", False),
         ("Who should have access?", "e.g. All of VP&C, or a specific team (RBAC applies)", False),
     ],
     "scale": [
         ("Which agent?", "Pick from your published pilots, e.g. PO Chaser", False),
-        ("Evidence of impact", "Hours saved, adoption, CSAT — link your metrics", True),
+        ("Evidence of impact", "Hours saved, adoption, CSAT - link your metrics", True),
         ("Current pilot users", "e.g. 38 across P2P operations", False),
         ("Owner sign-off", "Name of the accountable lead", False),
     ],

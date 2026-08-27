@@ -1,4 +1,4 @@
-"""Google Cloud agents — Contract IQ and the ESG scout."""
+"""Google Cloud agents - Contract IQ and the ESG scout."""
 
 from __future__ import annotations
 

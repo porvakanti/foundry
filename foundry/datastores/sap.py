@@ -1,4 +1,4 @@
-"""SAP adapter — agent metadata alongside the procurement master data.
+"""SAP adapter - agent metadata alongside the procurement master data.
 
 Talks to SAP over OData/RFC so agent ownership and audience can be derived
 from the same org structure that governs purchasing authority, instead of
@@ -75,7 +75,7 @@ class SAPRepo:
     def set_request_status(self, request_id: str, status: str, decided_by: str) -> None:
         """Mark a request approved or denied.
 
-        Phase 2: PATCH the entity — or better, call the workflow decision action so
+        Phase 2: PATCH the entity - or better, call the workflow decision action so
         SAP's own audit trail records it.
         """
         raise NotImplementedError("SAPRepo is a Phase 2 stub")

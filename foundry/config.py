@@ -41,21 +41,24 @@ def setting(key: str, default: str = "") -> str:
         if key in st.secrets:
             return str(st.secrets[key])
     except Exception:
-        # No secrets.toml present — normal when running from env vars only.
+        # No secrets.toml present - normal when running from env vars only.
         pass
     return os.environ.get(key, default)
 
 
-def reviewer_emails() -> list[str]:
-    """The people invited to review the pilot.
+def allowed_emails() -> list[str]:
+    """The people invited to use the marketplace.
 
     Mirrors the viewer allowlist configured in the app's Community Cloud
     settings. Holding a copy here lets the app reject an address that belongs
-    to nobody in the pilot, rather than accepting any @vodafone.com string
-    someone happens to type. Leave unset to keep the pilot open to the whole
-    domain.
+    to nobody, rather than accepting any @vodafone.com string someone happens
+    to type. Leave unset to keep the app open to the whole domain.
+
+    Reads ALLOWED_EMAILS, falling back to the older REVIEWER_EMAILS so an
+    existing deployment keeps working: an unrecognised name would empty the
+    list, which fails open to the entire domain.
     """
-    raw = setting("REVIEWER_EMAILS", "")
+    raw = setting("ALLOWED_EMAILS", "") or setting("REVIEWER_EMAILS", "")
     seen: list[str] = []
     for email in raw.split(","):
         email = email.strip().lower()

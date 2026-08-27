@@ -2,7 +2,7 @@
 
 One global CSS block, injected once per rerun by :func:`apply`. Everything the
 components render leans on the custom properties defined here, so the
-light/dark switch is a single variable swap — exactly how the HTML design spec
+light/dark switch is a single variable swap - exactly how the HTML design spec
 in ``design/`` does it.
 """
 
@@ -132,7 +132,7 @@ def apply() -> None:
     st.markdown(_CSS.replace("__VARS__", _vars(palette)), unsafe_allow_html=True)
 
 
-_CSS = """
+_CSS = r"""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&display=swap');
 
@@ -150,7 +150,7 @@ html, body, [class*="st-"], button, input, textarea, select {
 [data-testid="stAppViewBlockContainer"], .block-container {
   max-width: 1200px; padding: 12px 32px 80px !important;
 }
-/* Streamlit's own header is an invisible fixed overlay once emptied — without
+/* Streamlit's own header is an invisible fixed overlay once emptied - without
    this it swallows clicks on the marketplace's top bar underneath it. */
 [data-testid="stHeader"], .stAppHeader { background: transparent; height: 0; }
 [data-testid="stHeader"], [data-testid="stHeader"] *,

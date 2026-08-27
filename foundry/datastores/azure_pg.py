@@ -1,4 +1,4 @@
-"""Azure Database for PostgreSQL adapter — the likely Phase 2 default.
+"""Azure Database for PostgreSQL adapter - the likely Phase 2 default.
 
 A plain relational home for marketplace state, close to the Microsoft
 estate the Copilot agents already live in. Transactions give us the
@@ -97,6 +97,6 @@ class AzurePostgresRepo:
     def log_login(self, email: str) -> None:
         """Record a reviewer login for adoption stats.
 
-        Phase 2: INSERT into logins — replaces the CSV entirely.
+        Phase 2: INSERT into logins - replaces the CSV entirely.
         """
         raise NotImplementedError("AzurePostgresRepo is a Phase 2 stub")

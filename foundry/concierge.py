@@ -1,11 +1,11 @@
-"""Concierge search — describe a task, get the agents that fit.
+"""Concierge search - describe a task, get the agents that fit.
 
 Pilot implementation is deliberately transparent: keyword overlap against the
 agent's name, tagline, about text and function, ranked by how many of your
 words it hit. The "matches x, y" reason shown under each hit is literally the
 list of matched words, so a reviewer can see why an agent surfaced.
 
-TODO (Phase 3): swap the body of :func:`match` for an LLM call — embed the
+TODO (Phase 3): swap the body of :func:`match` for an LLM call - embed the
 query and the agent corpus, rank by semantic similarity, and have the model
 write the one-line reason. The signature below is the seam; nothing else in
 the app needs to change.

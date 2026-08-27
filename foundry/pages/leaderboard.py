@@ -1,4 +1,4 @@
-"""Leaderboard — how a pilot earns promotion to production.
+"""Leaderboard - how a pilot earns promotion to production.
 
 Scored by the Evaluation Agent against four weighted criteria. The headline
 number is the score published for this cycle; the expander recomputes the same
@@ -64,7 +64,7 @@ def _evaluation_banner() -> None:
             f'<div style="display:flex;align-items:center;gap:11px">'
             f'{theme.orbit_logo(22)}'
             f'<div style="font-size:13px;line-height:1.55"><b>Scored by the Evaluation Agent</b>'
-            f'<span style="color:var(--ink3)"> — recomputed 21 Aug from usage telemetry, '
+            f'<span style="color:var(--ink3)"> - recomputed 21 Aug from usage telemetry, '
             f'validated hours saved and CSAT. 1 anomaly flagged for human review.</span>'
             f'</div></div>',
             unsafe_allow_html=True,
@@ -161,7 +161,7 @@ def _table(pilots, breakdowns) -> None:
 
     with st.expander("How the Evaluation Agent computes these scores"):
         st.markdown(
-            "Each component is normalised 0–100 across the pilot cohort, then weighted "
+            "Each component is normalised 0-100 across the pilot cohort, then weighted "
             "**40% impact · 30% adoption · 20% satisfaction · 10% community**. "
             "A pilot with no ratings yet is placed at the cohort mean for satisfaction, "
             "so being new is not the same as being disliked."
@@ -176,7 +176,7 @@ def _table(pilots, breakdowns) -> None:
             )
             st.markdown(
                 f"<div style='font-size:12.5px;padding:6px 0;border-bottom:1px solid var(--line2)'>"
-                f"<b>{ui.esc(agent.name)}</b> — {parts} · "
+                f"<b>{ui.esc(agent.name)}</b> - {parts} · "
                 f"<b>recomputed {breakdown.total:.1f}</b> "
                 f"<span class='vf-meta'>(published {agent.impact_score})</span></div>",
                 unsafe_allow_html=True,

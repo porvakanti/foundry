@@ -1,4 +1,4 @@
-"""Microsoft Copilot Studio agents — the bulk of the pilot inventory."""
+"""Microsoft Copilot Studio agents - the bulk of the pilot inventory."""
 
 from __future__ import annotations
 

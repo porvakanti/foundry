@@ -1,4 +1,4 @@
-"""The Library — the full inventory, filtered.
+"""The Library - the full inventory, filtered.
 
 Tabs by maturity, then chips by function and platform. The design spec's chips
 map cleanly onto ``st.pills``, so those are used rather than reimplemented.
@@ -82,7 +82,7 @@ def render() -> None:
 
 
 def _apply_filters(agents, category, function, platform, query):
-    """Maturity, then chips, then the header search box — in that order."""
+    """Maturity, then chips, then the header search box - in that order."""
     ordered = _order(agents, category)
     if function:
         ordered = [a for a in ordered if a.function == function]

@@ -2,14 +2,14 @@
 
 Two steps, and it is worth being precise about what each one is for.
 
-1. A shared username and password. One credential for all reviewers.
-2. Who you are — used to attribute your votes, requests and feedback.
+1. A shared username and password. One credential for everyone in VP&C.
+2. Who you are, used to attribute your votes, requests and feedback.
 
-Step 2 is NOT a security check and the UI does not pretend otherwise. A typed
-address can be anyone's, so when REVIEWER_EMAILS is configured the step becomes
-a pick-your-name list rather than a free-text box. Real access control lives in
-the app's Community Cloud viewer allowlist, which verifies each person's
-identity before Streamlit serves the app at all.
+Step 2 is NOT a security check on its own and the UI does not pretend
+otherwise. A typed address can be anyone's, so it is checked against the list
+of people invited to the app. Real access control lives in the app's Community
+Cloud viewer allowlist, which verifies each person's identity before Streamlit
+serves the app at all.
 
 Note that ``st.user`` cannot help here: since Streamlit 1.42 it no longer
 exposes the viewer's Community Cloud account email, so the signed-in identity
@@ -28,7 +28,7 @@ from hmac import compare_digest
 import streamlit as st
 
 from foundry import theme
-from foundry.config import access_contact, allowed_domain, reviewer_emails, setting
+from foundry.config import access_contact, allowed_domain, allowed_emails, setting
 from foundry.repo import get_repo
 
 EMAIL_RE = re.compile(r"^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$")
@@ -52,14 +52,14 @@ def initials() -> str:
 
 
 def is_admin() -> bool:
-    """Whether this reviewer may open Governance.
+    """Whether this person may open Governance.
 
-    Every invited reviewer can, deliberately: the pilot is a review exercise,
-    and seeing the RBAC queue and access policies is part of what is being
-    reviewed. Membership of REVIEWER_EMAILS is the only gate, so there is no
-    second list to keep in step with the first.
+    Everyone invited can, deliberately: seeing the RBAC queue and access
+    policies is part of what the pilot is asking people to look at. Membership
+    of ALLOWED_EMAILS is the only gate, so there is no second list to keep in
+    step with the first.
 
-    Phase 2 reverses this — with Entra ID SSO the admin view belongs to the
+    Phase 2 reverses this - with Entra ID SSO the admin view belongs to the
     VP&C AI team's group, not to everyone who can open the app.
     """
     return is_authenticated()
@@ -82,22 +82,22 @@ def check_credentials(user: str, password: str) -> bool:
 def check_email(email: str) -> tuple[bool, str]:
     """Validate format, domain, and membership of the invited list.
 
-    The list is what stops a valid-looking address that belongs to nobody in
-    the pilot: without it, any @vodafone.com string would be accepted. Leaving
-    REVIEWER_EMAILS unset keeps the pilot open to the whole domain, which is
-    the sensible default before the reviewers are known.
+    The list is what stops a valid-looking address that belongs to nobody:
+    without it, any @vodafone.com string would be accepted. Leaving
+    ALLOWED_EMAILS unset keeps the app open to the whole domain, which is the
+    sensible default before the audience is known.
     """
     email = email.strip()
     domain = allowed_domain()
     if not EMAIL_RE.match(email):
-        return False, "That doesn't look like an email address — check the format and try again."
+        return False, "That doesn't look like an email address - check the format and try again."
     if not email.lower().endswith("@" + domain):
         return False, (
-            f"The marketplace pilot is open to @{domain} addresses only. "
+            f"The marketplace is open to @{domain} addresses only. "
             "Use your Vodafone address, or ask the VP&C AI team to add you."
         )
-    reviewers = reviewer_emails()
-    if reviewers and email.lower() not in reviewers:
+    invited = allowed_emails()
+    if invited and email.lower() not in invited:
         return False, (
             f"You're not authorised to access this yet. "
             f"Please reach out to {access_contact()} for access."
@@ -124,7 +124,7 @@ def render_login() -> None:
             Agent Marketplace
           </div>
           <div style="font-size:13.5px;color:var(--ink3);margin-top:8px;line-height:1.5">
-            Every VP&amp;C agent, in one place. Sign in with the reviewer credentials
+            Every VP&amp;C agent, in one place. Sign in with the credentials
             the VP&amp;C AI team shared with you.
           </div>
         </div>
@@ -152,8 +152,8 @@ def _render_credentials_step() -> None:
     with st.form("login_credentials"):
         st.markdown("<div style='font-weight:700;font-size:15px;margin-bottom:6px'>Sign in</div>",
                     unsafe_allow_html=True)
-        user = st.text_input("Username", placeholder="Reviewer username")
-        password = st.text_input("Password", type="password", placeholder="Shared pilot password")
+        user = st.text_input("Username")
+        password = st.text_input("Password", type="password")
         submitted = st.form_submit_button("Continue", type="primary", use_container_width=True)
 
     if submitted:
@@ -174,7 +174,7 @@ def _render_email_step() -> None:
     domain = allowed_domain()
 
     st.markdown(
-        "<div style='font-weight:700;font-size:15px;margin-bottom:2px'>Who's reviewing?</div>"
+        "<div style='font-weight:700;font-size:15px;margin-bottom:2px'>Who are you?</div>"
         "<div style='font-size:12.5px;color:var(--ink3);margin-bottom:10px;line-height:1.5'>"
         "So your votes, access requests and feedback are attributed to you. "
         "We don't send anything to this address.</div>",
@@ -205,6 +205,6 @@ def _sign_in(email: str) -> None:
     try:
         get_repo().log_login(st.session_state["email"])
     except Exception:
-        # Never block a reviewer because the login log is unwritable.
+        # Never block a sign-in because the login log is unwritable.
         pass
     st.rerun()

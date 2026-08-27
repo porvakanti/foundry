@@ -1,4 +1,4 @@
-# Streamlit chrome is kept deliberately plain — the marketplace look comes from
+# Streamlit chrome is kept deliberately plain - the marketplace look comes from
 # the CSS block injected by foundry/theme.py, which also drives the dark toggle.
 [theme]
 base = "light"
