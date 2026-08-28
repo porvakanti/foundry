@@ -40,6 +40,9 @@ Every setting is read from Streamlit secrets first, then the environment - so
 | `ALLOWED_EMAIL_DOMAIN` | no | `vodafone.com` | Domain the reviewer's email must match |
 | `ALLOWED_EMAILS` | no | - | The people invited to use the app; mirror the Community Cloud viewer allowlist. Anyone not listed is turned away at sign-in. Unset opens the app to the whole domain. The older name `REVIEWER_EMAILS` is still honoured. |
 | `ACCESS_CONTACT` | no | `Praveen` | Named in the "you're not authorised" message. |
+| `SSO` | no | `false` | `true` once the host authenticates visitors. The app adopts that identity and the stage QR stops carrying a token. |
+| `EVENT_SECRET` | no | - | Signing key for stage QR guest links. Unset means guest access is off. See *Guest access* below. |
+| `GUEST_TOKEN_HOURS` | no | `4` | How long a scanned guest link stays valid. |
 
 ## Deploy
 
@@ -139,6 +142,33 @@ foundry/
 data/                      agents.json + requests / submissions / votes / logins
 design/                    the HTML spec, screenshots and logo - do not edit
 ```
+
+## Guest access for a live audience
+
+Putting a QR on a screen and asking a few hundred people to vote does not work
+if the scan lands on a sign-in form. So while `SSO` is `false`, the stage QR
+carries a short-lived signed token and scanning it goes straight into the
+marketplace as a guest.
+
+A guest can browse Explore, the Library and the Leaderboard, and vote. Submit,
+Governance and access requests still require an ordinary sign-in, because those
+put a colleague's name against a record. The app says plainly that you are a
+guest and offers a way to sign in properly.
+
+The token is `<expiry>.<hmac>` signed with `EVENT_SECRET`. Nothing is stored, so
+it survives a restart and needs no database, and it expires on its own. Without
+`EVENT_SECRET` the mechanism is off.
+
+It is a bearer credential in a URL, and anyone in the room can photograph the
+screen. That is an accepted trade for an internal event with illustrative data,
+not a way to secure the app. Change `EVENT_SECRET` after the event to kill every
+link handed out on the day.
+
+**When SSO arrives**, set `SSO = "true"`. The app then adopts the identity the
+host has established, guest tokens stop being accepted, and the QR carries no
+token. `_sso_sign_in` in `foundry/auth.py` is the single place to adapt if AI
+Booster passes identity in a proxy header rather than through Streamlit's OIDC
+support.
 
 ## Data
 

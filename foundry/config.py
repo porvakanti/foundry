@@ -67,6 +67,34 @@ def allowed_emails() -> list[str]:
     return seen
 
 
+def _truthy(value: str) -> bool:
+    return value.strip().lower() in {"1", "true", "yes", "on"}
+
+
+def sso_enabled() -> bool:
+    """Whether an identity provider is authenticating people for us.
+
+    False during the pilot: the app runs its own shared sign-in and hands out
+    guest access from a signed link. True once the hosting environment (AI
+    Booster) authenticates the visitor, at which point guest links stop being
+    accepted and the QR carries no token at all.
+    """
+    return _truthy(setting("SSO", setting("SSO_ENABLED", "false")))
+
+
+def event_secret() -> str:
+    """Signing key for guest links. Unset means guest access is off."""
+    return setting("EVENT_SECRET", "")
+
+
+def guest_hours() -> int:
+    """How long a guest link stays valid. Long enough for one event."""
+    try:
+        return max(1, int(setting("GUEST_TOKEN_HOURS", "4")))
+    except ValueError:
+        return 4
+
+
 def access_contact() -> str:
     """Who an uninvited reviewer should ask for access."""
     return setting("ACCESS_CONTACT", "Praveen")

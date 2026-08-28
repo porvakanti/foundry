@@ -10,7 +10,7 @@ import streamlit as st
 
 from foundry import components as ui
 from foundry import nav, theme
-from foundry.auth import current_email, require_auth
+from foundry.auth import current_email, require_auth, require_member
 from foundry.repo import get_repo
 
 TRACKS = {
@@ -72,6 +72,7 @@ WEIGHTS = [("Impact (hours saved)", "40%"), ("Adoption", "30%"),
 
 def render() -> None:
     require_auth()
+    require_member("put something on the marketplace")
     theme.apply()
     ui.header()
 

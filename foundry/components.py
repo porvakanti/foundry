@@ -15,9 +15,12 @@ from typing import Any
 import streamlit as st
 
 from foundry import concierge, nav, theme
-from foundry.auth import current_email, initials, logout
+from foundry.auth import current_email, initials, is_guest, logout
 from foundry.config import VIEWER_ROLE
 from foundry.repo import Agent, get_repo
+
+#: What a guest signed in from a scanned link can reach.
+GUEST_PAGES = {"explore", "library", "leaderboard"}
 
 MATURITY_BADGE = {
     "scaled": ("Scaled", "var(--okSoft)", "var(--ok)"),
@@ -170,7 +173,8 @@ def header() -> None:
             st.markdown(
                 f'<div style="font-size:13px;font-weight:600">{esc(current_email())}</div>'
                 f'<div style="font-size:11.5px;color:var(--ink3);margin-top:2px">'
-                f'{esc(VIEWER_ROLE)}</div>',
+                f'{"Guest, signed in from a scanned link" if is_guest() else esc(VIEWER_ROLE)}'
+                f'</div>',
                 unsafe_allow_html=True,
             )
             if st.button("Sign out", key="signout", use_container_width=True):
@@ -182,6 +186,7 @@ def header() -> None:
         '<div style="height:1px;background:var(--line3);margin:2px 0 18px"></div>',
         unsafe_allow_html=True,
     )
+    _guest_banner()
     _concierge_panel()
 
 
@@ -192,12 +197,35 @@ def _nav_row() -> None:
     while every other column group stacks: eight stacked rows of nav would
     push the page itself off the phone.
     """
-    items = list(nav.NAV_ITEMS)
+    items = [(key, label) for key, label in nav.NAV_ITEMS
+             if not is_guest() or key in GUEST_PAGES]
     with st.container(key="topnav"):
         cols = st.columns(len(items) + 3)
         for col, (key, label) in zip(cols, items):
             with col:
                 st.page_link(nav.page(key), label=label)
+
+
+def _guest_banner() -> None:
+    """Say plainly that this is guest access, and offer the way out of it."""
+    if not is_guest():
+        return
+    note, action = st.columns([5, 1], vertical_alignment="center")
+    with note:
+        st.markdown(
+            '<div style="display:flex;align-items:center;gap:9px;flex-wrap:wrap;'
+            'margin-bottom:12px">'
+            + badge("GUEST", "var(--orgSoft)", "var(--org)")
+            + '<span style="font-size:12.5px;color:var(--ink3)">'
+            "You scanned in, so you can browse and vote. Sign in to submit an "
+            "idea or open Governance.</span></div>",
+            unsafe_allow_html=True,
+        )
+    with action:
+        if st.button("Sign in", key="guest_signin", use_container_width=True):
+            logout()
+            st.query_params.clear()
+            st.rerun()
 
 
 def _concierge_panel() -> None:

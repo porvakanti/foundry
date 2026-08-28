@@ -11,6 +11,7 @@ from dataclasses import dataclass
 
 import segno
 
+from foundry import guest
 from foundry.config import setting
 
 
@@ -40,6 +41,23 @@ def app_url() -> str:
     return setting("APP_URL", "https://vpc-agent-marketplace.streamlit.app")
 
 
+def scan_url() -> str:
+    """The URL the stage QR encodes.
+
+    While SSO is off this carries a short-lived signed token, so scanning goes
+    straight into the marketplace as a guest instead of landing on a sign-in
+    form that most of a room will not complete. Once SSO is on the token is
+    dropped: the identity provider does the work, and older photographed codes
+    stop being accepted.
+    """
+    base = app_url()
+    token = guest.mint()
+    if not token:
+        return base
+    separator = "&" if "?" in base else "?"
+    return f"{base}{separator}{guest.PARAM}={token}"
+
+
 def qr_svg(url: str, scale: int = 9) -> str:
     """An inline SVG QR code, so nothing has to be fetched from the network.
 
@@ -55,6 +73,9 @@ def qr_svg(url: str, scale: int = 9) -> str:
     is doing. A light-on-dark QR is an inverted code: some readers cope, plenty
     do not, and a code that fails for a third of a room is not worth the
     aesthetic consistency.
+
+    A guest token makes the URL longer, which makes the code denser. Error
+    correction stays at M so it still reads from the back of a room.
     """
     svg = segno.make(url, error="m").svg_inline(
         scale=scale, dark="#1A1A1A", light="#FFFFFF", border=4,
