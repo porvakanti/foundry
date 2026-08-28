@@ -407,7 +407,119 @@ hr, [data-testid="stDivider"] hr { border-color: var(--line2); }
 
 /* The "Press Enter to submit form" hint overlaps a short field. */
 [data-testid="InputInstructions"] { display: none !important; }
+
+
+/* --- hero ---------------------------------------------------------------
+   Classed rather than inline-styled so the media queries below can reach it.
+   The two-column grid gave the copy about 90px on a phone, which wrapped the
+   headline to one letter per line. */
+.vf-hero-grid {
+  position: relative; display: grid;
+  grid-template-columns: minmax(0, 1fr) clamp(200px, 26vw, 320px);
+  gap: 28px; align-items: center;
+}
+.vf-hero-copy { min-width: 0; }
+.vf-hero-h1 {
+  font-size: clamp(28px, 4.2vw, 48px); line-height: 1.05; letter-spacing: -.035em;
+  font-weight: 800; text-wrap: balance;
+}
+.vf-hero-sub {
+  font-size: clamp(13px, 1.4vw, 14.5px); color: var(--ink2); margin-top: 16px;
+  line-height: 1.6; max-width: 520px;
+}
+.vf-hero-cards { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+
+@media (max-width: 900px) {
+  .vf-hero-grid { grid-template-columns: 1fr; gap: 20px; }
+  .vf-hero-cards { flex-direction: row; flex-wrap: wrap; }
+  .vf-hero-cards > div { flex: 1 1 auto; transform: none !important; }
+}
+@media (max-width: 560px) {
+  /* decorative on a phone, and they crowd out the words that matter */
+  .vf-hero-cards { display: none; }
+}
+
+/* --- small screens ------------------------------------------------------
+   Streamlit lays columns out as a flex row that shrinks rather than wraps, so
+   a five-column header and a three-up card band both survive down to a phone
+   as unreadable slivers. Below the tablet breakpoint every column group
+   becomes full width, with three deliberate exceptions that must stay in one
+   line: the page nav, the top bar's icon buttons, and the stage toolbar. */
+
+@media (max-width: 1100px) {
+  [data-testid="stAppViewBlockContainer"], .block-container {
+    padding: 10px 20px 64px !important;
+  }
+}
+
+@media (max-width: 780px) {
+  [data-testid="stAppViewBlockContainer"], .block-container {
+    padding: 8px 14px 64px !important;
+  }
+  [data-testid="stHorizontalBlock"] { flex-wrap: wrap !important; row-gap: 10px; }
+  [data-testid="stHorizontalBlock"] > [data-testid="stColumn"] {
+    flex: 1 1 100% !important; width: 100% !important; min-width: 100% !important;
+  }
+
+  /* the nav scrolls sideways rather than becoming five stacked rows */
+  .st-key-topnav [data-testid="stHorizontalBlock"] {
+    flex-wrap: nowrap !important; overflow-x: auto; gap: 2px;
+    scrollbar-width: none; -webkit-overflow-scrolling: touch;
+  }
+  .st-key-topnav [data-testid="stHorizontalBlock"]::-webkit-scrollbar { display: none; }
+  .st-key-topnav [data-testid="stColumn"] {
+    flex: 0 0 auto !important; width: auto !important; min-width: auto !important;
+  }
+  [data-testid="stPageLink"] a { padding: 4px 10px; white-space: nowrap; }
+
+  /* brand and the icon buttons share the first line, search takes the second */
+  .st-key-topbar [data-testid="stHorizontalBlock"] { align-items: center; column-gap: 6px; }
+  .st-key-topbar [data-testid="stColumn"]:nth-child(1) {
+    flex: 1 1 40% !important; width: auto !important; min-width: 0 !important;
+  }
+  .vf-brand-name { font-size: 13.5px; }
+  .st-key-topbar [data-testid="stColumn"]:nth-child(2) { order: 9; }
+  .st-key-topbar [data-testid="stColumn"]:nth-child(n+3) {
+    flex: 0 0 auto !important; width: auto !important; min-width: 0 !important;
+  }
+  .st-key-topbar [data-testid="stColumn"]:nth-child(n+3) [data-testid^="stBaseButton"],
+  .st-key-topbar [data-testid="stColumn"]:nth-child(n+3) [data-testid="stPopoverButton"] {
+    padding-left: 9px !important; padding-right: 9px !important; min-width: 40px;
+  }
+  /* nothing smaller than this is readable at arm's length on a phone */
+  .vf-metric-k, .vf-meta, .vf-badge { font-size: 11px !important; }
+
+  /* stage controls stay on one line so a scene change is always one tap */
+  .st-key-stage_bar [data-testid="stHorizontalBlock"] { flex-wrap: nowrap !important; }
+  .st-key-stage_bar [data-testid="stColumn"] {
+    flex: 1 1 auto !important; width: auto !important; min-width: 0 !important;
+  }
+
+  /* headings that were sized for a desktop hero */
+  .vf-sec-title { font-size: 17px; }
+  .stButton, .stFormSubmitButton { width: 100%; }
+}
+
+/* Tables carry more columns than a phone has room for. Let them scroll inside
+   their own panel instead of stretching the page, which would put every other
+   element off-screen too. */
+.vf-panel:has(table) { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.vf-panel table { min-width: 520px; }
+
+/* Two-up cards on a tablet, one-up on a phone. */
+@media (min-width: 781px) and (max-width: 1100px) {
+  [data-testid="stColumn"]:has([class*="st-key-card_"]) {
+    flex: 1 1 47% !important; min-width: 47% !important;
+  }
+}
+
+/* Touch targets: 44px is the accepted minimum for a finger. */
+@media (pointer: coarse) {
+  [data-testid^="stBaseButton"], [data-testid="stPopoverButton"] { min-height: 44px; }
+  [data-testid="stPageLink"] a { min-height: 40px; display: flex; align-items: center; }
+}
 </style>
+
 
 
 
