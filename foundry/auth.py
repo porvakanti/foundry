@@ -1,23 +1,27 @@
-"""Pilot-grade authentication.
+"""Who gets in, and as what.
 
-Two steps, and it is worth being precise about what each one is for.
+Three ways in, tried in that order by :func:`require_auth`.
 
-1. A shared username and password. One credential for everyone in VP&C.
-2. Who you are, used to attribute your votes and access requests.
+1. **The identity provider**, when SSO is on. The host has already
+   authenticated the visitor and the app adopts that identity.
+2. **A signed guest link** from the stage QR, when SSO is off. Scanning goes
+   straight in as an anonymous guest who can browse and vote, and nothing else.
+   See :mod:`foundry.guest`.
+3. **The pilot sign-in**: a shared username and password, then who you are.
 
-Step 2 is NOT a security check on its own and the UI does not pretend
-otherwise. A typed address can be anyone's, so it is checked against the list
-of people invited to the app. Real access control lives in the app's Community
-Cloud viewer allowlist, which verifies each person's identity before Streamlit
-serves the app at all.
+Step 3's second half is not a security check on its own, and the UI does not
+pretend otherwise. A typed address could be anyone's, so it is checked against
+the list of people invited to the app. On Community Cloud the real gate is the
+viewer allowlist, which verifies identity before Streamlit serves the app at
+all.
 
-Note that ``st.user`` cannot help here: since Streamlit 1.42 it no longer
-exposes the viewer's Community Cloud account email, so the signed-in identity
-is not readable from inside the app without a configured identity provider.
+``st.user`` is only useful once an identity provider is configured. Since
+Streamlit 1.42 it does not expose a Community Cloud account email on its own,
+which is why the pilot sign-in exists at all.
 
-PHASE 2 REPLACES THIS ENTIRELY with Entra ID SSO. At that point the reviewer's
-identity, their group memberships and therefore their agent entitlements all
-come from the token, and `require_auth` becomes a token check.
+PHASE 2 RETIRES THE PILOT SIGN-IN. With Entra ID SSO the identity, the group
+memberships and therefore the agent entitlements all come from the token, and
+the shared credential goes away.
 """
 
 from __future__ import annotations
@@ -27,8 +31,9 @@ from hmac import compare_digest
 
 import streamlit as st
 
-from foundry import theme
-from foundry.config import access_contact, allowed_domain, allowed_emails, setting
+from foundry import guest, theme
+from foundry.config import (access_contact, allowed_domain, allowed_emails, setting,
+                            sso_enabled)
 from foundry.repo import get_repo
 
 EMAIL_RE = re.compile(r"^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$")
@@ -36,6 +41,11 @@ EMAIL_RE = re.compile(r"^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$")
 
 def is_authenticated() -> bool:
     return bool(st.session_state.get("authenticated")) and bool(st.session_state.get("email"))
+
+
+def is_guest() -> bool:
+    """Signed in from a scanned link rather than as a named colleague."""
+    return bool(st.session_state.get("is_guest"))
 
 
 def current_email() -> str:
@@ -62,11 +72,11 @@ def is_admin() -> bool:
     Phase 2 reverses this - with Entra ID SSO the admin view belongs to the
     VP&C AI team's group, not to everyone who can open the app.
     """
-    return is_authenticated()
+    return is_authenticated() and not is_guest()
 
 
 def logout() -> None:
-    for key in ("authenticated", "email", "password_ok"):
+    for key in ("authenticated", "email", "password_ok", "is_guest", guest.IDENTITY):
         st.session_state.pop(key, None)
 
 
@@ -106,11 +116,102 @@ def check_email(email: str) -> tuple[bool, str]:
 
 
 def require_auth() -> None:
-    """Guard every page. Sends unauthenticated visitors back to the login."""
-    if not is_authenticated():
-        st.session_state["_next"] = True
-        render_login()
-        st.stop()
+    """Guard every page.
+
+    Three ways in, tried in order: an existing session, the identity provider
+    once SSO is switched on, and a signed guest link from a scanned QR. Failing
+    all three, the sign-in page.
+    """
+    if is_authenticated():
+        return
+    if sso_enabled() and _sso_sign_in():
+        return
+    if _guest_sign_in():
+        return
+    render_login()
+    st.stop()
+
+
+def _sso_sign_in() -> bool:
+    """Adopt the identity the hosting environment has already established.
+
+    Reads Streamlit's st.user, which carries an OIDC identity once auth is
+    configured in secrets. That is the only source consulted today, because it
+    is the only one that can be tested from here.
+
+    If AI Booster instead fronts the app with a proxy that passes identity in a
+    request header, this function is the single place to add that: read the
+    header, put the address in ``email``, and the rest of the app is unchanged.
+    Returning False falls through to the ordinary sign-in, so switching SSO on
+    before the environment is ready degrades to what exists today rather than
+    locking anyone out.
+    """
+    email = ""
+    try:
+        email = (getattr(st.user, "email", "") or "").strip().lower()
+    except Exception:
+        # No identity provider configured yet.
+        email = ""
+    if not email:
+        return False
+    ok, _ = check_email(email)
+    if not ok:
+        return False
+    st.session_state["authenticated"] = True
+    st.session_state["email"] = email
+    st.session_state["is_guest"] = False
+    _log(email)
+    return True
+
+
+def _guest_sign_in() -> bool:
+    """Accept a signed link from the stage QR and sign in as a guest."""
+    token = st.query_params.get(guest.PARAM, "")
+    if not guest.verify(token):
+        return False
+    identity = st.session_state.get(guest.IDENTITY) or guest.new_identity()
+    st.session_state[guest.IDENTITY] = identity
+    st.session_state["authenticated"] = True
+    st.session_state["email"] = identity
+    st.session_state["is_guest"] = True
+    return True
+
+
+def require_member(action: str = "do this") -> None:
+    """Stop a guest at anything that writes a colleague's name against a record."""
+    if not is_guest():
+        return
+    theme.apply()
+    st.markdown(
+        f'<div class="vf-panel" style="text-align:center;padding:44px 20px;margin-top:24px">'
+        f'<div style="font-size:19px;font-weight:800;letter-spacing:-.02em">'
+        f'Sign in to {esc(action)}</div>'
+        f'<div style="font-size:13px;color:var(--ink3);margin-top:8px;line-height:1.6;'
+        f'max-width:430px;margin-left:auto;margin-right:auto">'
+        f"You're browsing as a guest from a shared link, so you can look around "
+        f"and vote. Anything that puts your name against a record needs a proper "
+        f"sign-in.</div></div>",
+        unsafe_allow_html=True,
+    )
+    if st.button("Sign in", type="primary"):
+        logout()
+        st.query_params.clear()
+        st.rerun()
+    st.stop()
+
+
+def esc(text: str) -> str:
+    import html
+
+    return html.escape(str(text), quote=True)
+
+
+def _log(email: str) -> None:
+    try:
+        get_repo().log_login(email)
+    except Exception:
+        # Never block a sign-in because the login log is unwritable.
+        pass
 
 
 def render_login() -> None:
@@ -200,9 +301,6 @@ def _render_email_step() -> None:
 def _sign_in(email: str) -> None:
     st.session_state["authenticated"] = True
     st.session_state["email"] = email.strip().lower()
-    try:
-        get_repo().log_login(st.session_state["email"])
-    except Exception:
-        # Never block a sign-in because the login log is unwritable.
-        pass
+    st.session_state["is_guest"] = False
+    _log(st.session_state["email"])
     st.rerun()

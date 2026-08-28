@@ -11,7 +11,7 @@ import streamlit as st
 
 from foundry import components as ui
 from foundry import theme
-from foundry.auth import current_email, require_auth
+from foundry.auth import current_email, require_auth, require_member
 from foundry.repo import display_name, get_repo
 
 AVG_APPROVAL = "0.8d"
@@ -19,6 +19,7 @@ AVG_APPROVAL = "0.8d"
 
 def render() -> None:
     require_auth()
+    require_member("open Governance")
     theme.apply()
     ui.header()
 

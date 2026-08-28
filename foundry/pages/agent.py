@@ -14,7 +14,7 @@ import streamlit as st
 
 from foundry import components as ui
 from foundry import nav, theme
-from foundry.auth import current_email, require_auth
+from foundry.auth import current_email, is_guest, require_auth
 from foundry.playgrounds import get_playground
 from foundry.repo import Agent, get_repo
 
@@ -297,6 +297,13 @@ def _idea_panel(agent: Agent) -> None:
 
 @st.dialog("Request access")
 def _request_dialog(agent: Agent) -> None:
+    if is_guest():
+        st.info(
+            "Requesting access puts your name in front of the agent's owner, so "
+            "it needs a proper sign-in rather than a scanned link.",
+            icon="ℹ️",
+        )
+        return
     st.markdown(
         f'<div style="font-size:13px;color:var(--ink2);line-height:1.6">'
         f'Your request goes to <b>{ui.esc(agent.owner)}</b> ({ui.esc(agent.owner_role)}). '

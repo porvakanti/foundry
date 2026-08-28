@@ -283,10 +283,14 @@ def _scene_ask() -> None:
 
 
 def _qr(caption: str) -> None:
-    url = stagecast.app_url()
-    dark = "#F2F2F4" if theme.is_dark() else "#1A1A1A"
+    """A scannable code sits on its own white plate in both themes.
+
+    The URL comes from scan_url, so while SSO is off it carries a guest token
+    and a scan goes straight into the marketplace rather than a sign-in form.
+    """
     st.markdown(
-        f'<div class="stage-qr">{stagecast.qr_svg(url, dark)}'
+        f'<div class="stage-qr"><div class="stage-qr-plate">'
+        f'{stagecast.qr_svg(stagecast.scan_url())}</div>'
         f'<div class="stage-qr-cap">{ui.esc(caption)}</div></div>',
         unsafe_allow_html=True,
     )
@@ -442,7 +446,12 @@ _STAGE_CSS = r"""
 
 /* QR */
 .stage-qr { text-align: center; }
-.stage-qr svg { width: clamp(120px, 15vw, 300px); height: auto; }
+.stage-qr-plate {
+  display: inline-block; background: #fff; border-radius: clamp(8px, .9vw, 16px);
+  padding: clamp(6px, .7vw, 12px); line-height: 0;
+  box-shadow: 0 6px 24px rgba(0,0,0,.14);
+}
+.stage-qr svg { width: clamp(130px, 15vw, 300px); height: auto; display: block; }
 .stage-qr-cap {
   font-size: clamp(10px, 1.05vw, 19px); color: var(--ink4); margin-top: clamp(6px, 1vh, 14px);
   letter-spacing: .06em;
