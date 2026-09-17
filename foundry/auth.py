@@ -222,16 +222,14 @@ def render_login() -> None:
         '<div style="font-size:13.5px;color:var(--ink3);margin-top:8px;line-height:1.5">'
         'Every VP&amp;C agent, in one place.</div>' if first_step else ""
     )
+    # One unbroken line: an empty strapline would otherwise leave a blank line
+    # mid-block, which ends the HTML block and prints the trailing tag as text.
     st.markdown(
-        f"""
-        <div class="vf-fade" style="max-width:420px;margin:6vh auto 20px;text-align:center">
-          <div style="display:flex;justify-content:center;margin-bottom:14px">{theme.orbit_logo(52)}</div>
-          <div style="font-size:30px;font-weight:800;letter-spacing:-.03em;line-height:1.1">
-            Agent Marketplace
-          </div>
-          {strapline}
-        </div>
-        """,
+        '<div class="vf-fade" style="max-width:420px;margin:6vh auto 20px;text-align:center">'
+        f'<div style="display:flex;justify-content:center;margin-bottom:14px">{theme.orbit_logo(52)}</div>'
+        '<div style="font-size:30px;font-weight:800;letter-spacing:-.03em;line-height:1.1">'
+        'Agent Marketplace</div>'
+        f'{strapline}</div>',
         unsafe_allow_html=True,
     )
 
