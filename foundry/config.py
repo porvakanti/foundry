@@ -26,7 +26,8 @@ LOGINS_FILE = DATA_DIR / "logins.csv"
 LOGO_FILE = DESIGN_DIR / "assets" / "vf_logo.png"
 
 #: Shown on Explore and the Leaderboard as the next monthly scale-up review.
-NEXT_REVIEW = "12 Sep"
+#: Override per deployment so it never goes stale: NEXT_REVIEW="14 Nov".
+NEXT_REVIEW = os.environ.get("NEXT_REVIEW", "10 Oct")
 
 #: Hardcoded for the pilot; Phase 2 reads it from the directory profile.
 VIEWER_ROLE = "P2P Operations"
