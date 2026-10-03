@@ -1,0 +1,15 @@
+[
+ {"id":"imagine","gap":1.2,"text":"Imagine an App Store for A.I. Built by our people, for our people."},
+ {"id":"intro","gap":1.6,"text":"This is the Agent Marketplace. Every agent. One marketplace."},
+ {"id":"share","gap":1.3,"text":"Anyone, in any team, can submit an idea, or share an agent they've already built. In Copilot Studio, with partners, or on our own platforms."},
+ {"id":"discover","gap":1.2,"text":"Colleagues discover it. Just describe the task, and the concierge finds the right agent."},
+ {"id":"try","gap":1.0,"text":"Try it. Rate it. Help improve it. Innovation, made accessible to everyone."},
+ {"id":"league","gap":1.2,"text":"The highest-rated contributions rise up a league table, creating visibility, and healthy competition."},
+ {"id":"panel","gap":1.0,"text":"Each month, a panel, supported by an evaluation agent, combines community ratings with business impact, and brings the most promising ideas to management."},
+ {"id":"winners","gap":0.9,"text":"Winners receive recognition and awards, and support to become robust solutions that entire functions can use."},
+ {"id":"govern","gap":1.1,"text":"Governance is built in. Restricted agents stay protected, and an access approval workflow takes care of the rest."},
+ {"id":"cycle","gap":1.4,"text":"It's a cycle. Share. Experiment. Improve. Scale."},
+ {"id":"fluency","gap":0.9,"text":"It drives ideation, builds A.I. fluency, and helps us learn from each other."},
+ {"id":"combine","gap":0.9,"text":"And as participation grows, individual ideas combine into bigger opportunities, turning creativity across the organisation into shared business value."},
+ {"id":"outro","gap":1.4,"text":"The Agent Marketplace. Built by our people, for our people."}
+]
