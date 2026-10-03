@@ -1,8 +1,9 @@
 """Synthesise the voice-over, align words, and lay the lines out on the 120 s timeline.
 
-Engine:
-  * Azure Speech (en-GB-SoniaNeural) when AZURE_SPEECH_KEY and AZURE_SPEECH_REGION are set.
-  * Otherwise a local Piper voice (placeholder only).
+Engine (first that works):
+  * Azure Speech (en-GB-SoniaNeural) when AZURE_SPEECH_KEY and AZURE_SPEECH_REGION are set (licensed).
+  * edge-tts: the same Sonia voice via Microsoft Edge's free read-aloud service (unofficial, no SLA).
+  * A local Piper voice (placeholder only).
 
 Outputs (in build/): vo/<id>.wav, cues.json, cues.js (window.CUES for film.html).
 """
@@ -39,6 +40,28 @@ def azure_tts(text, out):
                  'X-Microsoft-OutputFormat': 'riff-48khz-16bit-mono-pcm', 'User-Agent': 'agent-marketplace-film'})
     with urllib.request.urlopen(req, timeout=60) as r:
         out.write_bytes(r.read())
+
+
+def edge_tts_synth(text, out):
+    import asyncio
+    import certifi
+    import edge_tts
+    # edge-tts trusts only certifi's bundle; behind a TLS-inspecting proxy add its CA too.
+    extra = os.environ.get('SSL_CERT_FILE') or ('/root/.ccr/ca-bundle.crt' if Path('/root/.ccr/ca-bundle.crt').exists() else None)
+    if extra:
+        bundle = BUILD / 'ca-bundle.pem'
+        bundle.write_text(Path(certifi.where()).read_text() + '\n' + Path(extra).read_text())
+        certifi.where = lambda: str(bundle)
+        import edge_tts.communicate as ec
+        if hasattr(ec, 'certifi'):
+            ec.certifi.where = certifi.where
+        if hasattr(ec, '_SSL_CTX'):
+            import ssl
+            ec._SSL_CTX = ssl.create_default_context(cafile=str(bundle))
+    mp3 = out.with_suffix('.mp3')
+    asyncio.run(edge_tts.Communicate(text, SONIA, rate='-4%').save(str(mp3)))
+    subprocess.run(['ffmpeg', '-v', 'error', '-y', '-i', str(mp3), '-ar', '48000', '-ac', '1', str(out)], check=True)
+    mp3.unlink()
 
 
 def piper_tts(text, out):
@@ -89,16 +112,24 @@ def align(model, wav, script_words):
 
 
 def main():
-    engine = 'azure' if os.environ.get('AZURE_SPEECH_KEY') and os.environ.get('AZURE_SPEECH_REGION') else 'piper'
-    print('voice engine:', engine, file=sys.stderr)
     VO.mkdir(parents=True, exist_ok=True)
+    if os.environ.get('AZURE_SPEECH_KEY') and os.environ.get('AZURE_SPEECH_REGION'):
+        engine = 'azure'
+    else:
+        engine = 'piper'
+        try:
+            edge_tts_synth('Test.', VO / '_probe.wav'); (VO / '_probe.wav').unlink(); engine = 'edge'
+        except Exception as e:  # noqa: BLE001 — any failure means fall back
+            print('edge-tts unavailable:', e, file=sys.stderr)
+    print('voice engine:', engine, file=sys.stderr)
+    synth = {'azure': azure_tts, 'edge': edge_tts_synth, 'piper': piper_tts}[engine]
     lines = json.loads((HERE / 'script.json').read_text())
     for l in lines:
         spoken = l['text']
         for a, b in SAY.items():
             spoken = spoken.replace(a, b)
         out = VO / f"{l['id']}.wav"
-        (azure_tts if engine == 'azure' else piper_tts)(spoken, out)
+        synth(spoken, out)
         l['dur'] = round(duration(out), 3)
 
     # lay out: lead-in, then each line after its gap; stretch gaps to fill the timeline
