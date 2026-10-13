@@ -1,0 +1,21 @@
+AGENT MARKETPLACE — SharePoint tile copy
+
+One-liner (21 words):
+Discover, try and rate AI agents built across procurement, or submit your own idea; the best are picked monthly to scale.
+
+Moment line (5 words):
+Every agent. One marketplace.
+
+Personas:
+Buyers & local markets; Category managers; Analysts; Leadership
+
+Status:
+SOON
+
+Running time:
+2:00
+
+Key facts (no usage numbers yet; pilot figures are placeholders):
+- Lists agents from any platform: Copilot Studio, partner tools and in-house solutions
+- Anyone can contribute, from a first idea to a finished agent
+- Monthly panel, including an evaluation agent, selects ideas to scale
