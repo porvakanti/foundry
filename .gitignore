@@ -5,3 +5,7 @@ venv/
 .streamlit/secrets.toml
 data/logins.csv
 .DS_Store
+
+# Packaged governance bundle. Assembled from docs/architecture/, so it is a
+# build output rather than a source file: rebuild it instead of committing it.
+VPC-Agent-Marketplace-Governance-Pack.zip
