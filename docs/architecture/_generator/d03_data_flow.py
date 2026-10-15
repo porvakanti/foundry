@@ -39,7 +39,7 @@ d.add('<rect x="590" y="%s" width="225" height="112" rx="5" fill="#FFFFFF" strok
 d.text(604, Y + 202, "Responsible AI Service", size=9.5, bold=True, color=GGREEN_D)
 for i, t in enumerate(["Safety filters and guardrails", "PII and data-privacy screening",
                        "Prompt-injection defences", "Policy verification"]):
-    d.text(604, Y + 220 + i * 15, "─ " + t, size=8.4, color=GREY_S)
+    d.litem(604, Y + 220 + i * 15, t, size=8.4, color=GREY_S)
 
 band(855, 245, "B4", "Application tier", "vf-grp-aib-prd-scm-vpc-xx", GBLUE)
 d.icon(977, Y + 76, "gcp/compute/run.png", "Backend", "The only component with a data path", size=34, chars=20)

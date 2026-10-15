@@ -44,7 +44,7 @@ d.add('<rect x="500" y="414" width="260" height="88" rx="5" fill="#FFFFFF" strok
 d.text(516, 434, "Responsible AI Service", size=10, bold=True, color=GGREEN_D)
 for i, t in enumerate(["Safety filters and guardrails", "PII and data-privacy screening",
                        "Prompt-injection defences", "Policy verification"]):
-    d.text(516, 452 + i * 13, "─ " + t, size=8.6, color=GREY_S)
+    d.litem(516, 452 + i * 13, t, size=8.6, color=GREY_S)
 
 # backend capabilities
 d.group(820, 270, 560, 560, "Backend domain services", color=GBLUE, fill=GBLUE, fill_op=0.04,
@@ -86,13 +86,13 @@ doms = ["Agent catalogue", "Submissions", "Users and application role mappings",
         "Votes and feedback", "Activity and audit records", "Notifications and requests",
         "Taxonomy and classifications", "Similarity and relationship outputs"]
 for i, t in enumerate(doms):
-    d.text(1442, 616 + i * 22, "─ " + t, size=9.2, color=GREY_T)
+    d.litem(1442, 616 + i * 22, t, size=9.2, color=GREY_T)
 d.add('<rect x="1440" y="800" width="300" height="86" rx="5" fill="%s" fill-opacity="0.5" stroke="%s" stroke-width="1"/>'
       % (GREY_F, GREY_B))
 d.text(1456, 820, "Also in the data layer", size=9.5, bold=True, color=GREY_S)
-d.text(1456, 838, "─ Cloud Storage: attachments, exports, staging", size=8.6, color=GREY_T)
-d.text(1456, 854, "─ Secret Manager: secrets and runtime config", size=8.6, color=GREY_T)
-d.text(1456, 870, "─ Cloud Logging: application, security, telemetry", size=8.6, color=GREY_T)
+d.litem(1456, 838, "Cloud Storage: attachments, exports, staging", size=8.6)
+d.litem(1456, 854, "Secret Manager: secrets and runtime config", size=8.6)
+d.litem(1456, 870, "Cloud Logging: application, security, telemetry", size=8.6)
 d.add('<rect x="1440" y="900" width="300" height="46" rx="5" fill="%s" fill-opacity="0.06" stroke="%s" stroke-width="1"/>'
       % (GRED, GRED_D))
 d.text(1456, 920, "Retention enforced as partition expiry", size=9, bold=True, color=GRED_D)

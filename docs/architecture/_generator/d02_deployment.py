@@ -112,7 +112,7 @@ caps = ["Catalogue service", "Submission and intake service", "Review and approv
         "Notification service", "Audit service", "AI-assisted intake and recommendation"]
 for i, c in enumerate(caps):
     col, row = i // 5, i % 5
-    d.text(1332 + col * 214, 660 + row * 19, "─ " + c, size=8.8, color=GREY_T)
+    d.litem(1332 + col * 214, 660 + row * 19, c, size=8.8, color=GREY_T)
 d.icon(1880, 648, "gcp/api/api-gateway.png", "Proxy Service / LLM Router", "Shared AIB core", size=32, chars=18)
 d.line([(1248, 636), (1248, 730)], NEW)
 d.line([(1248, 770), (1300, 770), (1300, 714)], NEW)
@@ -126,7 +126,7 @@ doms = ["Agent catalogue", "Submissions", "Users and application role mappings",
         "Votes and feedback", "Activity and audit records", "Notifications and requests",
         "Taxonomy and classifications", "Similarity and relationship outputs"]
 for i, t in enumerate(doms):
-    d.text(1330, 932 + i * 18, "─ " + t, size=8.8, color=GREY_T)
+    d.litem(1330, 932 + i * 18, t, size=8.8, color=GREY_T)
 d.add('<rect x="1316" y="1086" width="368" height="40" rx="4" fill="%s" fill-opacity="0.07" stroke="%s" stroke-width="1"/>'
       % (GRED, GRED_D))
 d.text(1328, 1102, "Confidential  |  CMEK  |  user and market-level filtering", size=9, bold=True, color=GRED_D)

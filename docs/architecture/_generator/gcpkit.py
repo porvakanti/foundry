@@ -165,6 +165,13 @@ class Diagram:
                  % (x, y, r, color))
         self.text(x, y + 3.8, str(n), size=10.5, bold=True, color=WHITE, anchor="middle")
 
+    def litem(self, x, y, t, size=8.8, color=None, dot=None):
+        """A list item. A small drawn dot, not a dash character: typographic
+        marks like U+2500 read as stray long hyphens once rendered."""
+        self.add('<circle cx="%s" cy="%s" r="1.9" fill="%s"/>'
+                 % (x + 2, y - 3.2, dot or "#9AA0A6"))
+        self.text(x + 11, y, t, size=size, color=color or GREY_T)
+
     def tag(self, x, y, t, color=GREY_S, size=8.5):
         w = len(t) * size * 0.55 + 10
         self.add('<rect x="%s" y="%s" width="%s" height="15" rx="3" fill="#FFFFFF" '
