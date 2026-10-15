@@ -25,6 +25,11 @@
 | D4 | `diagrams/04-catalogue-data-lifecycle.svg` | Where the agent information lives and how it reaches the UI |
 | - | `schema/bigquery-ddl.sql` | The executable schema, with retention and classification in the DDL |
 
+Diagrams use the official Google Cloud product icon set and follow Google's architecture
+diagramming conventions: containment carries meaning (organisation, service perimeter,
+project), services are icons rather than boxes, and numbered steps match the request-path
+narrative beside each figure. Source SVGs are editable; 2x PNG exports sit beside them.
+
 ---
 
 ## 1. Executive summary
