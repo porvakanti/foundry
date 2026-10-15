@@ -52,6 +52,9 @@ box diagram. Keep to them when adding a diagram.
   the same canvas.
 - **Colour-code the review surface** when a diagram will be read by an approver: what is new
   versus what is inherited from an already-approved platform.
+- **List items use `litem()`, which draws a small dot.** Do not use a dash, hyphen or box-drawing
+  character as a bullet: rendered at diagram scale they read as stray long hyphens, and reviewers
+  correctly flag them as machine-generated.
 - **Leave 18px between a group's subtitle and its first child.** The subtitle sits at `y+34`; a
   child placed at `y+28` will overlap it. This is the single most common layout bug.
 
